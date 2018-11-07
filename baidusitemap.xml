@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>http://zackku.com/cap/</loc>
+    <lastmod>2018-11-07T09:50:16.075Z</lastmod>
+    <data>
+        <display>
+        <title>浅谈分布式CAP定理</title>
+        <pubTime>2018-10-17T11:29:13.000Z</pubTime>
+        
+        <tag>CAP</tag>
+         
+         
+           
+             
+              <breadCrumb title="计算机理论" url="http://zackku.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%90%86%E8%AE%BA/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://zackku.com/redis-rdb-aof/</loc>
     <lastmod>2018-11-02T10:04:22.692Z</lastmod>
     <data>
@@ -17,26 +37,6 @@
            
              
               <breadCrumb title="Redis进阶" url="http://zackku.com/categories/Redis%E8%BF%9B%E9%98%B6/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://zackku.com/cap/</loc>
-    <lastmod>2018-10-22T12:08:28.366Z</lastmod>
-    <data>
-        <display>
-        <title>浅谈分布式CAP定理</title>
-        <pubTime>2018-10-17T11:29:13.000Z</pubTime>
-        
-        <tag>CAP</tag>
-         
-         
-           
-             
-              <breadCrumb title="计算机理论" url="http://zackku.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%90%86%E8%AE%BA/"/>
           
         </display>
     </data>

@@ -109,26 +109,26 @@
   <meta name="keywords" content="CAP," />
 
 
-<meta name="description" content="互联网发展到现在，由于数据量大、操作并发高等问题，大部分网站项目都采用分布式的架构。 而分布式系统最大的特点数据分散，在不同网络节点在某些时刻（数据未同步完，数据丢失），数据会不一致。 在2000年，Eric Brewer教授在PODC的研讨会上提出了一个猜想：一致性、可用性和分区容错性三者无法在分布式系统中被同时满足，并且最多只能满足其中两个！ 在2002年，Lynch证明其猜想，上升为定理。">
+<meta name="description" content="互联网发展到现在，由于数据量大、操作并发高等问题，大部分网站项目都采用分布式的架构。而分布式系统最大的特点数据分散，在不同网络节点在某些时刻（数据未同步完，数据丢失），数据会不一致。 在2000年，Eric Brewer教授在PODC的研讨会上提出了一个猜想：一致性、可用性和分区容错性三者无法在分布式系统中被同时满足，并且最多只能满足其中两个！ 在2002年，Lynch证明其猜想，上升为定理。被这">
 <meta name="keywords" content="CAP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅谈分布式CAP定理">
 <meta property="og:url" content="http://zackku.com/cap/index.html">
 <meta property="og:site_name" content="Zack&#39;s Blog">
-<meta property="og:description" content="互联网发展到现在，由于数据量大、操作并发高等问题，大部分网站项目都采用分布式的架构。 而分布式系统最大的特点数据分散，在不同网络节点在某些时刻（数据未同步完，数据丢失），数据会不一致。 在2000年，Eric Brewer教授在PODC的研讨会上提出了一个猜想：一致性、可用性和分区容错性三者无法在分布式系统中被同时满足，并且最多只能满足其中两个！ 在2002年，Lynch证明其猜想，上升为定理。">
+<meta property="og:description" content="互联网发展到现在，由于数据量大、操作并发高等问题，大部分网站项目都采用分布式的架构。而分布式系统最大的特点数据分散，在不同网络节点在某些时刻（数据未同步完，数据丢失），数据会不一致。 在2000年，Eric Brewer教授在PODC的研讨会上提出了一个猜想：一致性、可用性和分区容错性三者无法在分布式系统中被同时满足，并且最多只能满足其中两个！ 在2002年，Lynch证明其猜想，上升为定理。被这">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://qiniu.zackku.com/image/cap/cap-concept.jpeg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/cap/demo.jpeg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
-<meta property="og:updated_time" content="2018-10-22T12:08:28.366Z">
+<meta property="og:updated_time" content="2018-11-07T09:50:16.075Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈分布式CAP定理">
-<meta name="twitter:description" content="互联网发展到现在，由于数据量大、操作并发高等问题，大部分网站项目都采用分布式的架构。 而分布式系统最大的特点数据分散，在不同网络节点在某些时刻（数据未同步完，数据丢失），数据会不一致。 在2000年，Eric Brewer教授在PODC的研讨会上提出了一个猜想：一致性、可用性和分区容错性三者无法在分布式系统中被同时满足，并且最多只能满足其中两个！ 在2002年，Lynch证明其猜想，上升为定理。">
+<meta name="twitter:description" content="互联网发展到现在，由于数据量大、操作并发高等问题，大部分网站项目都采用分布式的架构。而分布式系统最大的特点数据分散，在不同网络节点在某些时刻（数据未同步完，数据丢失），数据会不一致。 在2000年，Eric Brewer教授在PODC的研讨会上提出了一个猜想：一致性、可用性和分区容错性三者无法在分布式系统中被同时满足，并且最多只能满足其中两个！ 在2002年，Lynch证明其猜想，上升为定理。被这">
 <meta name="twitter:image" content="http://qiniu.zackku.com/image/cap/cap-concept.jpeg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 
 
 
-  <link rel="alternate" href="/atom.xml" title="Zack's Blog" type="application/atom+xml" />
+  <link rel="alternate" href="/rss.xml" title="Zack's Blog" type="application/atom+xml" />
 
 
 
@@ -440,8 +440,7 @@
       
 
       
-        <p>互联网发展到现在，由于数据量大、操作并发高等问题，大部分网站项目都采用分布式的架构。</p>
-<p>而分布式系统最大的特点数据分散，在不同网络节点在某些时刻（数据未同步完，数据丢失），数据会不一致。</p>
+        <p>互联网发展到现在，由于数据量大、操作并发高等问题，大部分网站项目都采用分布式的架构。而分布式系统最大的特点数据分散，在不同网络节点在某些时刻（数据未同步完，数据丢失），数据会不一致。</p>
 <p>在2000年，Eric Brewer教授在PODC的研讨会上提出了一个猜想：一致性、可用性和分区容错性三者无法在分布式系统中被同时满足，并且最多只能满足其中两个！</p>
 <p>在2002年，Lynch证明其猜想，上升为定理。被这就是大家所认知的CAP定理。</p>
 <p>CAP是所有分布式数据库的设计标准。例如Zookeeper、Redis、HBase等的设计都是基于CAP理论的。</p>
@@ -775,7 +774,7 @@
 
           
             <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
+              <a href="/rss.xml" rel="alternate">
                 <i class="fa fa-rss"></i>
                 RSS
               </a>
