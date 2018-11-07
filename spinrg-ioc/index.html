@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="8df1kGxKl77ts3Y_6huryVjNQJWbf8mTVXeBvHNGtZk" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.5" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-z.png?v=6.0.5">
+
+
+  <link rel="mask-icon" href="/images/safari-pinned-tab-z.svg?v=6.0.5" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.0.5',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: 'USQASS7PS3',
+      apiKey: 'b2fc1956207dad6c82679e86986cfead',
+      indexName: 'blog',
+      hits: {"per_page":3},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="Spring,ioc," />
+
+
+<meta name="description" content="本章开始来学习下Spring的源码，看看Spring框架最核心、最常用的功能是怎么实现的。网上介绍Spring，说源码的文章，大多数都是生搬硬推，都是直接看来的观点换个描述就放出来。这并不能说有问题，但没有从一个很好的、容易切入的角度去了解学习。博主来尝试抛弃一些所知，从使用上入手，步步回溯源码去了解学习。 很多人会混乱IOC和DI的两个概念，其实这两者是层面的不同。具体的区别的区别：IOC是DI">
+<meta name="keywords" content="Spring,ioc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="零基础带你看Spring源码——IOC控制反转">
+<meta property="og:url" content="http://zackku.com/spinrg-ioc/index.html">
+<meta property="og:site_name" content="Zack&#39;s Blog">
+<meta property="og:description" content="本章开始来学习下Spring的源码，看看Spring框架最核心、最常用的功能是怎么实现的。网上介绍Spring，说源码的文章，大多数都是生搬硬推，都是直接看来的观点换个描述就放出来。这并不能说有问题，但没有从一个很好的、容易切入的角度去了解学习。博主来尝试抛弃一些所知，从使用上入手，步步回溯源码去了解学习。 很多人会混乱IOC和DI的两个概念，其实这两者是层面的不同。具体的区别的区别：IOC是DI">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-3.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/bean-factory-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/bean-factory-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/bean-factory-3.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-4.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-5.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-6.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-7.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/get-bean-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/get-bean-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E6%A0%87%E5%87%86%E8%89%B2%E7%89%88.png">
+<meta property="og:updated_time" content="2018-09-07T06:59:45.030Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="零基础带你看Spring源码——IOC控制反转">
+<meta name="twitter:description" content="本章开始来学习下Spring的源码，看看Spring框架最核心、最常用的功能是怎么实现的。网上介绍Spring，说源码的文章，大多数都是生搬硬推，都是直接看来的观点换个描述就放出来。这并不能说有问题，但没有从一个很好的、容易切入的角度去了解学习。博主来尝试抛弃一些所知，从使用上入手，步步回溯源码去了解学习。 很多人会混乱IOC和DI的两个概念，其实这两者是层面的不同。具体的区别的区别：IOC是DI">
+<meta name="twitter:image" content="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+
+
+
+
+
+
+  <link rel="canonical" href="http://zackku.com/spinrg-ioc/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>零基础带你看Spring源码——IOC控制反转 | Zack's Blog</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115388456-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-115388456-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zack's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">这里应该有一句格言，但我们没有写</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-电子书">
+          <a href="/ebooks" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />电子书</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br />公众号：Zack说码</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zackku.com/spinrg-ioc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zack Ku">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar2.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zack's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">零基础带你看Spring源码——IOC控制反转</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-03T22:09:54+08:00">2018-09-03</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/spinrg-ioc/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/spinrg-ioc/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本章开始来学习下Spring的源码，看看Spring框架最核心、最常用的功能是怎么实现的。<br>网上介绍Spring，说源码的文章，大多数都是生搬硬推，都是直接看来的观点换个描述就放出来。这并不能说有问题，但没有从一个很好的、容易切入的角度去了解学习。博主来尝试抛弃一些所知，从使用上入手，步步回溯源码去了解学习。</p>
+<p>很多人会混乱IOC和DI的两个概念，其实这两者是层面的不同。<br>具体的区别的区别：<strong>IOC是DI的原理。依赖注入是向某个类或方法注入一个值，其中所用到的原理就是控制反转。</strong><br>所以说到操作层面的时候用DI，原理层的是说IOC，下文亦同。</p>
+<p>对于DI最新使用方法，现在都是建议用Java注解去标识。但是相信笔者，不要用这种方式去看源码。笔者本来是想从Java注解入手去一步步看源码，debug看看发生什么了。但发现更多时间是在调SpringBoot和AOP的源码。在看了一天后，还是换一种思路吧，因为AOP是打算在下一章再讲的。</p>
+<p>所以我用XML的方式，搭了一个最简单的Spring项目来学习其中IOC的源码。建议大家把代码拉下来，跟着笔者思路来一起看。<br>源码在此：<a href="https://github.com/Zack-Ku/spring-ioc-demo" target="_blank" rel="noopener">https://github.com/Zack-Ku/spring-ioc-demo</a></p>
+<h1 id="搭建内容"><a href="#搭建内容" class="headerlink" title="搭建内容"></a>搭建内容</h1><p>maven的依赖,只添加了spring-context模板，用的是4.3.11版本<a id="more"></a>（部分代码）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> &lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-context&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;4.3.11.RELEASE&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure></p>
+<!-- ![](http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/dependency.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim) -->
+<p>作为Bean的Service（部分代码）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public class TestBeanServiceImpl implements TestBeanService &#123;</span><br><span class="line">    public String getBean() &#123;</span><br><span class="line">        return &quot;a test bean&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<!-- ![](http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/beanservice-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim) -->
+<p>配置XML（部分代码）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id=&quot;testBeanService&quot; class=&quot;com.zack.demo.TestBeanServiceImpl&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<!-- ![](http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/xml.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim) -->
+<p>启动类。只是加载了下spring的xml配置，然后从context中拿出Bean，这就是完整IOC的过程了。（部分代码）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class Application &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        // 加载xml配置</span><br><span class="line">        ApplicationContext context =</span><br><span class="line">            new ClassPathXmlApplicationContext(&quot;classpath:application.xml&quot;);</span><br><span class="line"></span><br><span class="line">        // IOC获取Bean</span><br><span class="line">        TestBeanService testBeanService = context.getBean(TestBeanService.class);</span><br><span class="line"></span><br><span class="line">        System.out.println(testBeanService.getBean());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<!-- ![](http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/application.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim) -->
+<p>最后启动就能获取这个bean，看到getMessage()打印的内容了。</p>
+<p>这样就是一个比较纯粹的Spring-IOC的项目了。我们直接从启动类开始看起</p>
+<h1 id="Bean的含义"><a href="#Bean的含义" class="headerlink" title="Bean的含义"></a>Bean的含义</h1><p>前置先解释下这个Bean的含义，因为会贯穿整个流程。<br>通俗地讲，Bean就是IOC的容器。如上面的例子，将TestBeanService注册到Spring里，那么TestBeanService就是Spring的里面的一个Bean。Demo里面<code>context.getBean()</code>就是从Spring中取出这个Bean，完成控制反转的。</p>
+<p>所以我们的重点就是要看看Spring到底是怎么生成管理这些Bean的。</p>
+<h1 id="ClassPathXmlApplicationContext"><a href="#ClassPathXmlApplicationContext" class="headerlink" title="ClassPathXmlApplicationContext"></a>ClassPathXmlApplicationContext</h1><p>启动类中，加载配置的<code>ClassPathXmlApplicationContext</code>肯定就是完成IOC的核心。不知道它到底是怎么做的，怎么入手呢？<br>先来看看它的类图<br><img src="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>先分析下这个类图，</p>
+<ol>
+<li><code>ClassPathXmlApplicationContext</code>类是<code>AbstractApplicationContext</code>抽象类的子类</li>
+<li><code>AbstractApplicationContext</code>类是<code>ApplicaionContext</code>接口的实现。</li>
+<li><code>ApplicaionContext</code>接口集合了非常多的内容，其中和IOC比较相关的就是<code>ListableBeanFactory</code>接口和<code>HierarchicalBeanFactory</code>接口</li>
+<li><code>ListableBeanFactory</code>接口和<code>HierarchicalBeanFactory</code>接口是继承<code>BeanFactory</code></li>
+</ol>
+<p>从此分析可以看出，<code>ClassPathXmlApplicationContext</code>是什么，了解下<code>ApplicaionContext</code>；它怎么和IOC有关，要了解<code>BeanFactory</code>。<br>所以后面我们先来看看<code>ApplicaionContext</code>与<code>BeanFactory</code>。</p>
+<h1 id="ApplicationContext"><a href="#ApplicationContext" class="headerlink" title="ApplicationContext"></a>ApplicationContext</h1><p><img src="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-3.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>从该接口的注解描述可知，ApplicationContext是整个项目的配置，Spring项目在启动或运行的时候都需要依赖到它。</p>
+<p>其中Bean管理相关的则是<code>ListableBeanFactory</code>和<code>HierarchicalBeanFactory</code>。</p>
+<h1 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h1><p><code>ListableBeanFactory</code>和<code>HierarchicalBeanFactory</code>都是继承<code>BeanFactory</code>的。<br>先看看<code>BeanFactory</code>的文件注解<br><img src="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/bean-factory-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>从上图可知，<code>BeanFactory</code>就是获取Bean容器的地方。而且他可以提供单例的对象或者是独立的对象</p>
+<p><img src="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/bean-factory-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>从这段可以得知，<code>HierarchicalBeanFactory</code>是一个分层的Bean，如果实现了这个接口，所有方法都会经过父类的工厂。所以这个是个拓展的类，暂时先不看它。</p>
+<p>接下来看看<code>ListableBeanFactory</code>注解说明<br><img src="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/bean-factory-3.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>这个接口是要实现预先加载Bean的配置，生成好实例，直接管理Bean的实例，而不是来一个请求，生成一个。</p>
+<p>好了，以上就是基本的概念和认知，现在带着这些概念，我们回头看看<code>ClassPathXmlApplicationContext</code>的执行流程，看看它到底怎么的生成管理Bean的。</p>
+<h1 id="初始化IOC容器"><a href="#初始化IOC容器" class="headerlink" title="初始化IOC容器"></a>初始化IOC容器</h1><p>从<code>ClassPathXmlApplicationContext</code>的构造函数看，最核心的就是<code>refresh()</code>函数，其他只是设一些值。<br>而这个<code>refresh()</code>是调用父类<code>AbstractApplicationContext</code>中的<code>refresh()</code>。<br>根据它的注解可知它是加载刷新了整个context，并且加载所有Bean定义和创建对应的单例。<br><img src="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-4.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<p>看下这个方法做了什么<br><img src="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-5.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>里面有许多步骤，重点看下<code>obtainFreshBeanFactory()</code>（重新获取一个BeanFactory）。<br>它里面有个核心的方法<code>refreshBeanFactory()</code><br><img src="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-6.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>如果已有BeanFactory，先删除所有Bean，然后关闭BeanFactory。<br>然后创建一个新的<code>ListableBeanFactory</code>，上面说到这个工厂里会预先加载所有的Bean。<br>最后核心的就是<code>loadBeanDefinitions(beanFactory)</code>，它是加载Bean的定义。实现交给了子类。<br><img src="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/context-7.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>用的是<code>XmlBeanDefinitionReader</code>直接读配置文件加载Bean Definition(Bean定义)到BeanFactory。它里面一步步把xml的配置文件拆解读取，把一个个Bean Definition加载到BeanFactory里。<br>至此，已经有用一个加载好Bean Definition的BeanFactory了。</p>
+<p>其他方法也是围绕BeanFactory后置处理和Context的配置准备。内容太多，想更深入了解的话建议顺着以上思路，找到对应代码阅读以下。</p>
+<h1 id="依赖注入"><a href="#依赖注入" class="headerlink" title="依赖注入"></a>依赖注入</h1><p>回到启动类中，看看怎么从context中获取bean的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">context.getBean(TestBeanService.class)</span><br></pre></td></tr></table></figure></p>
+<p>是根据类去拿bean的，当然也可以根据id。<br>其对应的源码实现，在<code>DefaultListableBeanFactory</code>中，上文有说到对应的BeanFactory选型。<br><img src="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/get-bean-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br><code>NamedBeanHolder</code>是里面包含一个实例化的对象，和bean的名字。<code>resolveNamedBean()</code>是怎么拿出Bean的关键。</p>
+<p>一步步Debug，可以看到，它是遍历BeanFactory里面维护的beanDefinitionNames和manualSingletonNames成员变量，找出命中的beanName返回。<br><img src="http://pdufjhqho.bkt.clouddn.com/upload_image/java-spring-ioc/get-bean-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>然后拿着这个beanName去找具体的bean实例。这里的代码比较长，在<code>AbstractBeanFactory</code>里面的<code>doGetBean()</code>中实现。<br>大意是先尝试去找手动添加bean的单例工厂里找有没有对应的实例，没有的话就往父类beanFactory里面找，最后没有的话就生成一个。</p>
+<p>spring中一个bean是如何加载和如何注入大致如此，更细节的内容，可以自己debug看看源码。</p>
+<h1 id="控制反转的优点"><a href="#控制反转的优点" class="headerlink" title="控制反转的优点"></a>控制反转的优点</h1><p>最后来以我个人观点谈谈控制反转的优点吧。<br>举个例子，我要装修房子，需要门、浴具、厨具、油漆、玻璃等材料。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">decorateHouse(Door,BathThing,CookThing,....)</span><br></pre></td></tr></table></figure></p>
+<p>但是我作为一个装修工人，我需要去制造门、制造浴具，合成玻璃油漆吗？<br>不需要，也不关心其建造的过程，对应的会有人去做这些东西。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">door = buildDoor();</span><br><span class="line">glass = buildGlass();</span><br></pre></td></tr></table></figure></p>
+<p>所有材料放到建材商城里面，装修工人需要什么材料就去建材商城里面取。</p>
+<p>对应Spring的IOC，门、玻璃等材料就是Bean，建材商城就是IOC容器，把材料放到建材商城就是Bean加载，去商城拿材料就是依赖注入的过程。</p>
+<p>程序开发发展至今，一个简答的项目或许也要分几个模板，几个人去开发。划分好职责，设计好接口，面向接口编程。每个人只需要完成好自己那部分的工作，依赖调用就可以了。这样做同时有助于降低项目的耦合度，让项目有更好的延伸性。由此Spring的IOC就是基于以上的需求所诞生的。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>回顾下全文的内容</p>
+<ol>
+<li>ApplicationContext是Spring项目的核心配置，项目运行依赖于它，其中包含许多方面的内容。</li>
+<li>BeanFactory是Context包含的内容之一，它负责管理Bean的加载，生成，注入等内容。</li>
+<li>Spring控制反转为了降低项目耦合，提高延伸性。</li>
+</ol>
+<p>本文讲Spring IOC还比较浅显，仅仅讲了如何加载的重点和注入的重点，关于生命周期，BeanFactory的处理由于篇幅问题并没有细讲。有兴趣的读者可以用Demo跑起来，一步步Debug看看。因为Demo基本是最小化的Spring IOC了，所以这个Debug不会太难，很容易就能看清楚整个流程做了什么。</p>
+<p>Demo：<a href="https://github.com/Zack-Ku/spring-ioc-demo" target="_blank" rel="noopener">https://github.com/Zack-Ku/spring-ioc-demo</a></p>
+<p>如果觉得还不错，请关注公众号：Zack说码<br><img src="http://pdufjhqho.bkt.clouddn.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E6%A0%87%E5%87%86%E8%89%B2%E7%89%88.png" alt=""></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>听说你想请我喝下午茶?~</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpeg" alt="Zack Ku 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpeg" alt="Zack Ku 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spring/" rel="tag"># Spring</a>
+          
+            <a href="/tags/ioc/" rel="tag"># ioc</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/java-thread-threadpoolexecutor/" rel="next" title="你真的懂ThreadPoolExecutor线程池技术吗？看了源码你会有全新的认识">
+                <i class="fa fa-chevron-left"></i> 你真的懂ThreadPoolExecutor线程池技术吗？看了源码你会有全新的认识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar2.jpeg"
+                alt="Zack Ku" />
+            
+              <p class="site-author-name" itemprop="name">Zack Ku</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/zack-ku" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:gza_scnu@163.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://pdufjhqho.bkt.clouddn.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E6%A0%87%E5%87%86%E8%89%B2%E7%89%88.png" target="_blank" title="WeChat" rel="external nofollow"><i class="fa fa-fw fa-wechat"></i></a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#搭建内容"><span class="nav-number">1.</span> <span class="nav-text">搭建内容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bean的含义"><span class="nav-number">2.</span> <span class="nav-text">Bean的含义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ClassPathXmlApplicationContext"><span class="nav-number">3.</span> <span class="nav-text">ClassPathXmlApplicationContext</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ApplicationContext"><span class="nav-number">4.</span> <span class="nav-text">ApplicationContext</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BeanFactory"><span class="nav-number">5.</span> <span class="nav-text">BeanFactory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化IOC容器"><span class="nav-number">6.</span> <span class="nav-text">初始化IOC容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入"><span class="nav-number">7.</span> <span class="nav-text">依赖注入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#控制反转的优点"><span class="nav-number">8.</span> <span class="nav-text">控制反转的优点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zack Ku</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.5"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.5"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.5"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.5"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.5"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.1.8/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'sA9qkJThiH0lRmB46cSVdCJ3-gzGzoHsz',
+        appKey: 'eHgeHgsNtk4nHbcGFNcrz1W6',
+        placeholder: '说点什么...',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=6.0.5"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

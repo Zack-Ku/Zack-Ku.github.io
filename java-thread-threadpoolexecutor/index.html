@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="8df1kGxKl77ts3Y_6huryVjNQJWbf8mTVXeBvHNGtZk" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.5" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-z.png?v=6.0.5">
+
+
+  <link rel="mask-icon" href="/images/safari-pinned-tab-z.svg?v=6.0.5" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.0.5',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: 'USQASS7PS3',
+      apiKey: 'b2fc1956207dad6c82679e86986cfead',
+      indexName: 'blog',
+      hits: {"per_page":3},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="多线程,Java,线程池," />
+
+
+<meta name="description" content="Java是一门多线程的语言，基本上生产环境的Java项目都离不开多线程。而线程则是其中最重要的系统资源之一，如果这个资源利用得不好，很容易导致程序低效率，甚至是出问题。 有以下场景，有个电话拨打系统，有一堆需要拨打的任务要执行，首先肯定是考虑多线程异步去执行。假如我每执行一个拨打任务都new一个Thread去执行，当同时有1万个任务需要执行的时候，那么就会新建1万个线程，加上线程各种初始销毁等操作">
+<meta name="keywords" content="多线程,Java,线程池">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你真的懂ThreadPoolExecutor线程池技术吗？看了源码你会有全新的认识">
+<meta property="og:url" content="http://zackku.com/java-thread-threadpoolexecutor/index.html">
+<meta property="og:site_name" content="Zack&#39;s Blog">
+<meta property="og:description" content="Java是一门多线程的语言，基本上生产环境的Java项目都离不开多线程。而线程则是其中最重要的系统资源之一，如果这个资源利用得不好，很容易导致程序低效率，甚至是出问题。 有以下场景，有个电话拨打系统，有一堆需要拨打的任务要执行，首先肯定是考虑多线程异步去执行。假如我每执行一个拨打任务都new一个Thread去执行，当同时有1万个任务需要执行的时候，那么就会新建1万个线程，加上线程各种初始销毁等操作">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/queues-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/queues-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/keepalive-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/reject-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/execute-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/execute-3.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/execute-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-3.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-4.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-5.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-6.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
+<meta property="og:updated_time" content="2018-10-17T08:11:24.019Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="你真的懂ThreadPoolExecutor线程池技术吗？看了源码你会有全新的认识">
+<meta name="twitter:description" content="Java是一门多线程的语言，基本上生产环境的Java项目都离不开多线程。而线程则是其中最重要的系统资源之一，如果这个资源利用得不好，很容易导致程序低效率，甚至是出问题。 有以下场景，有个电话拨打系统，有一堆需要拨打的任务要执行，首先肯定是考虑多线程异步去执行。假如我每执行一个拨打任务都new一个Thread去执行，当同时有1万个任务需要执行的时候，那么就会新建1万个线程，加上线程各种初始销毁等操作">
+<meta name="twitter:image" content="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/queues-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zack's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://zackku.com/java-thread-threadpoolexecutor/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>你真的懂ThreadPoolExecutor线程池技术吗？看了源码你会有全新的认识 | Zack's Blog</title>
+  
+
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?877c602c29f8404e400126d43bc86593";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zack's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">这里应该有一句格言，但我们没有写</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-电子书">
+          <a href="/ebooks" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />电子书</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br />公众号：Zack说码</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zackku.com/java-thread-threadpoolexecutor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zack Ku">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar2.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zack's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">你真的懂ThreadPoolExecutor线程池技术吗？看了源码你会有全新的认识</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-28T17:12:58+08:00">2018-08-28</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java多线程/" itemprop="url" rel="index"><span itemprop="name">Java多线程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/java-thread-threadpoolexecutor/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/java-thread-threadpoolexecutor/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Java是一门多线程的语言，基本上生产环境的Java项目都离不开多线程。而线程则是其中最重要的系统资源之一，如果这个资源利用得不好，很容易导致程序低效率，甚至是出问题。</p>
+<p>有以下场景，有个电话拨打系统，有一堆需要拨打的任务要执行，首先肯定是考虑多线程异步去执行。假如我每执行一个拨打任务都new一个Thread去执行，当同时有1万个任务需要执行的时候，那么就会新建1万个线程，加上线程各种初始销毁等操作，这个消耗是巨大的。而其实往往实现这些功能的时候，并不是完全需要实时马上完成，只是希望在可控范围内尽量提高执行的并发性能。</p>
+<p>因此线程池技术应用而生，Java中最常用的线程池技术就是ThreadPoolExecutor。接下来就整体看看ThreadPoolExecutor的实现。<a id="more"></a><br>这个类的注解非常多，很多也是重点，所以就不从注解开始看起。先从使用说起，有个概念先。</p>
+<h1 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// 核心线程</span><br><span class="line">int corePoolSize = 5;</span><br><span class="line">// 最大线程</span><br><span class="line">int maximumPoolSize = 10;</span><br><span class="line">// 线程空闲回收时间</span><br><span class="line">int keepAliveTime = 30;</span><br><span class="line">// 线程空闲回调时间单位</span><br><span class="line">TimeUnit unit = TimeUnit.SECONDS;</span><br><span class="line">// 队列大小</span><br><span class="line">int queueSize = 20;</span><br><span class="line">// 队列</span><br><span class="line">BlockingQueue workQueue = new ArrayBlockingQueue&lt;Runnable&gt;(queueSize);</span><br><span class="line">ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);</span><br><span class="line">executor.execute(() -&gt; &#123;</span><br><span class="line">    // do something 1</span><br><span class="line">&#125;);</span><br><span class="line">executor.execute(() -&gt; &#123;</span><br><span class="line">    // do something 2</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>定义好一些必要的参数，构建一个ThreadPoolExecutor对象。然后调用对象的execute()方法即可。<br>参数说明：</p>
+<ul>
+<li>corePoolSize，线程池保留的最小线程数。如果线程池中的线程少于此数目，则在执行execut()时创建。</li>
+<li>maximumPoolSize，线程池中允许拥有的最大线程数。</li>
+<li>keepAliveTime、unit，当线程闲置时，保持线程存活的时间。</li>
+<li>workQueue，工作队列，存放提交的等待任务，其中有队列大小的限制。</li>
+</ul>
+<h1 id="线程管理机制"><a href="#线程管理机制" class="headerlink" title="线程管理机制"></a>线程管理机制</h1><p><strong>非常多人误解了corePoolSize、maximumPoolSize、workQueue的相互关系。不少人认为无论队列选择什么，corePoolSize和maximumPoolSize一定是有用，定义一定是生效的，其实并不然啊!</strong><br>看下<strong>线程基本规则</strong>注解说明<br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/queues-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<ol>
+<li>默认情况下，线程池在初始的时候，线程数为0。当接收到一个任务时，如果线程池中存活的线程数小于corePoolSize核心线程，则新建一个线程。</li>
+<li>如果所有运行的核心线程都都在忙，超出核心线程处理的任务，执行器更多地选择把任务放进队列，而不是新建一个线程。</li>
+<li>如果一个任务提交不了到队列，在不超出最大线程数量情况下，会新建线程。超出了就会报错。</li>
+</ol>
+<p>另外，如果想在线程初始化时候就有核心线程，可以调用prestartCoreThread()或prestartAllCoreThread()，前者是初始一个，后者是初始全部。</p>
+<p>再看看<strong>排队策略</strong><br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/queues-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<ul>
+<li>直接提交，用SynchronousQueue。特点是不保存，直接提交给线程，如果没没线程，则新建一个。</li>
+<li>无限提交，用类似LinkedBlockingQueue无界队列。特点是保存所以核心线程处理不了的任务，队列无上限，最大线程也没用。</li>
+<li>有限提交，用类似ArrayBlockingQueue有界队列。特点是可以保存超过核心线程的任务，并且队列也是有上限的。超过上限，新建线程（满了抛错）。更好地保护资源，防止崩溃，也是最常用的排队策略。</li>
+</ul>
+<p><strong>从以上规则可以看出来，核心线程数和最大线程数，还有队列结构是相互影响的，如何排队，队列多大，最大线程是多少都是不一定的。</strong></p>
+<p>再看看<strong>保持存活机制</strong><br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/keepalive-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>当超过核心线程数的线程，线程池会让该线程保持存活keepAliveTime时间，超过该时间则会销毁该线程。<br>另外默认对非核心线程有效，若想核心线程也适用于这个机制，可以调用allowCoreThreadTimeOut()方法。这样的话就没有核心线程这一说了。</p>
+<p><strong>综合以上，线程池在多次执行任务后，会一直维持部分线程存活，即使它是闲置的。这样的目的是为了减少线程销毁创建的开销，下次有个任务需要执行，直接从池子里拿线程就能用了。但核心线程不能维护太多，因为也需要一定开销。最大的线程数保护了整个系统的稳定性，避免并发量大的时候，把线程挤满。工作队列则是保证了任务顺序和暂存，系统的可靠性。线程存活规则的目的和维护核心线程的目的类似，但降低了它的存活的时间。</strong></p>
+<p>另外还有<strong>拒绝机制</strong>，它提供了一些异常情况下的解决方案。<br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/reject-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<h1 id="ctl线程状态控制"><a href="#ctl线程状态控制" class="headerlink" title="ctl线程状态控制"></a>ctl线程状态控制</h1><p>这个ctl变量是整个线程池的核心控制状态。<br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/execute-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>这个ctl代表了两个变量</p>
+<ul>
+<li>workerCount，生效的线程数。基本可以理解为存活的线程，但某个时候有暂时性的差异。</li>
+<li>runState，线程池的运行状态。<br>其中，ctl（int32位）的低29位代表workerCount，所以最大线程数为(2^29)-1。另外3位表示runState。</li>
+</ul>
+<p>runState有以下几种状态：<br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/execute-3.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<ul>
+<li>RUNNING：接收新任务，处理队列任务。</li>
+<li>SHUTDOWN：不接收新任务，但处理队列任务。</li>
+<li>STOP：不接收新任务，也不处理队列任务，并且中断所有处理中的任务。</li>
+<li>TIDYING：所有任务都被终结，有效线程为0。会触发terminated()方法。</li>
+<li>TERMINATED：当terminated()方法执行结束。</li>
+</ul>
+<p>当调用了shutdown()，状态会从RUNNING变成SHUTDOWN，不再接收新任务，此时会处理完队列里面的任务。<br>如果调用的是shutdownNow()，状态会直接变成STOP。<br>当线程或者队列都是空的时候，状态就会变成TIDYING。<br>当terminated()执行完的时候，就会变成TERMINATED。</p>
+<h1 id="execute"><a href="#execute" class="headerlink" title="execute()"></a>execute()</h1><p>带着对上面的规则与机制的认识，现在从就这这个入口开始看看源码，到底整个流程是怎么实现的。<br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/execute-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<ol>
+<li>如果少于核心线程在跑，用这个任务尝试创建一个新线程。</li>
+<li>如果一个任务成功入队，再次检查下线程池状态看是否需要入队，因为可能在入队过程中，状态发送了变化。如果确认入队且没有存活线程，则新建一个空线程。</li>
+<li>如果进不了队，则尝试新建一个线程，如果都失败了。拒绝这个task<br>对于第二点最后为什么新建一个线程？很容易猜想到，会有一个轮询的机制让下个task出队，直接利用这个空闲线程。</li>
+</ol>
+<p>注释基本解释了所有代码，代码也没什么特别的。其中最主要的还是addWoker()这个方法，下面来看看。</p>
+<h1 id="addWoker"><a href="#addWoker" class="headerlink" title="addWoker()"></a>addWoker()</h1><p>先了解下这个方法的整体思路<br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>从描述可知，addwoker失败，会在线程池状态不对、线程满了或者线程工厂创建线程池失败时候发生。<br>这个方法比较长，分两段看。先看第一段。<br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br><code>retry:</code>这种写法，如果比较少看源码的，应该是前所未见的了。这是个循环的位置标记，是java的语法之一。看回代码，这里面for循环还嵌套里一个for循环，而<code>retry:</code>是标记第一个for循环的，后面<code>break</code>和<code>continue</code>语句都指向到了<code>retry</code>。说明<code>break</code>和<code>continue</code>是都是操作外层的for循环。retry可以是任何变量命名合法的字符。</p>
+<p>然后看看外出for循环的if语句<br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-3.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>这个if判断想要执行到<code>return false;</code>，队列为空是一个必要条件。因为addWork()不单只接收新任务会调用到，处理队列中的任务也会调用到。而前面提到SHUTDOWN状态下还会处理队列中的任务的，所以队列不为空是会让它继续执行下去的。</p>
+<p>对于内层的for循环<br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-4.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>会先判断worker的数据是否符合corePoolSize和maximumPoolSize的定义，不满足则返回失败。<br>然后尝试CAS让workerCount自增，如果CAS失败还是继续自旋去自增，直到成功。除非线程池状态发生了变化，发退回到外层for循环重新执行，判断线程池的状态。</p>
+<p><strong>第一段的代码，就是让workerCount在符合条件下自增</strong></p>
+<p>第二段代码<br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-5.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>这段比较好理解，先创建一个Worker对象，这个Worker里面包含一个由线程工厂创建的线程，和一个需要执行的任务（可以为空）。如果线程创建成功了，那么就加一个重入锁去把这个新建的Worker对象放到workers成员变量中，在加入之前需要重新判断下线程池的状态和新建线程的状态。如果worker添加到workers成员变量中，就启动这个新建的线程。最后如果添加失败，则执行<code>addWorkFailed(w)</code>。<br><img src="http://qiniu.zackku.com/image/java-thread-threadpoolexecutor/addworker-6.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>如果失败了，加锁操作回滚下wokers、workerCount，然后判断下状态看看是否需要终结线程池。</p>
+<p><code>addWorker()</code>大概的流程就这样。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>对于其他方法，没有什么特别的，在此不再过多的叙述，有兴趣的可以翻翻源码阅读下。<br>回顾总结下上面的核心要点</p>
+<ol>
+<li>当核心线程满且忙碌时，线程池倾向于把提交的任务放进队列，而不是新建线程。</li>
+<li>根据选择队列的不同，maximumPoolSize不一定有用的。具体有三种不同的策略。</li>
+<li>ctl是线程池的核心控制状态，包含的runState线程池运行状态和workCount有效线程数。</li>
+<li><code>retry:</code>是一种标记循环的语法，retry可以是任何变量命名合法字符。</li>
+</ol>
+<hr>
+<p>更多技术文章、精彩干货，请关注<br>博客：zackku.com<br>微信公众号：Zack说码<br><img src="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png" alt=""></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>听说你想请我喝下午茶?~</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpeg" alt="Zack Ku 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpeg" alt="Zack Ku 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/线程池/" rel="tag"># 线程池</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/java-thread-reentranreedwritelock/" rel="next" title="Java多线程——ReentrantReadWriteLock源码阅读">
+                <i class="fa fa-chevron-left"></i> Java多线程——ReentrantReadWriteLock源码阅读
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/spring-ioc/" rel="prev" title="零基础带你看Spring源码——IOC控制反转">
+                零基础带你看Spring源码——IOC控制反转 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar2.jpeg"
+                alt="Zack Ku" />
+            
+              <p class="site-author-name" itemprop="name">Zack Ku</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/zack-ku" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:gza_scnu@163.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://zack-blog.oss-cn-shenzhen.aliyuncs.com/image/blog-common/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png" target="_blank" title="WeChat" rel="external nofollow"><i class="fa fa-fw fa-wechat"></i></a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本使用"><span class="nav-number">1.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线程管理机制"><span class="nav-number">2.</span> <span class="nav-text">线程管理机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ctl线程状态控制"><span class="nav-number">3.</span> <span class="nav-text">ctl线程状态控制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#execute"><span class="nav-number">4.</span> <span class="nav-text">execute()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#addWoker"><span class="nav-number">5.</span> <span class="nav-text">addWoker()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zack Ku</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.5"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.5"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.5"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.5"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.5"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.1.8/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'sA9qkJThiH0lRmB46cSVdCJ3-gzGzoHsz',
+        appKey: 'eHgeHgsNtk4nHbcGFNcrz1W6',
+        placeholder: '说点什么...',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=6.0.5"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

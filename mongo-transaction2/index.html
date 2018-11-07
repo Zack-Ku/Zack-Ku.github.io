@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="8df1kGxKl77ts3Y_6huryVjNQJWbf8mTVXeBvHNGtZk" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.5" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-z.png?v=6.0.5">
+
+
+  <link rel="mask-icon" href="/images/safari-pinned-tab-z.svg?v=6.0.5" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.0.5',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: 'USQASS7PS3',
+      apiKey: 'b2fc1956207dad6c82679e86986cfead',
+      indexName: 'blog',
+      hits: {"per_page":3},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="mongodb,事务," />
+
+
+<meta name="description" content="mongodb拥有事务的解决方案（一）   接上篇博文，本文将探索下mongodb的二段提交方案去解决事务问题。">
+<meta name="keywords" content="mongodb,事务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mongodb拥有事务的解决方案（二）">
+<meta property="og:url" content="http://zackku.com/mongo-transaction2/index.html">
+<meta property="og:site_name" content="Zack&#39;s Blog">
+<meta property="og:description" content="mongodb拥有事务的解决方案（一）   接上篇博文，本文将探索下mongodb的二段提交方案去解决事务问题。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oboi2pfvn.bkt.clouddn.com/two-phase-commit.png">
+<meta property="og:updated_time" content="2018-09-29T02:36:51.367Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mongodb拥有事务的解决方案（二）">
+<meta name="twitter:description" content="mongodb拥有事务的解决方案（一）   接上篇博文，本文将探索下mongodb的二段提交方案去解决事务问题。">
+<meta name="twitter:image" content="http://oboi2pfvn.bkt.clouddn.com/two-phase-commit.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zack's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://zackku.com/mongo-transaction2/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>Mongodb拥有事务的解决方案（二） | Zack's Blog</title>
+  
+
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?877c602c29f8404e400126d43bc86593";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zack's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">这里应该有一句格言，但我们没有写</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-电子书">
+          <a href="/ebooks" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />电子书</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br />公众号：Zack说码</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zackku.com/mongo-transaction2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zack Ku">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar2.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zack's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Mongodb拥有事务的解决方案（二）</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-06T00:00:00+08:00">2016-08-06</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/MongoDB/" itemprop="url" rel="index"><span itemprop="name">MongoDB</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/mongo-transaction2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/mongo-transaction2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://zackku.com/mongo-transaction/">mongodb拥有事务的解决方案（一）</a>  </p>
+<p>接上篇博文，本文将探索下mongodb的二段提交方案去解决事务问题。</p>
+<a id="more"></a>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><blockquote>
+<p>在MongoDB中，操作单个文档（document）是原子性的；但是，涉及到多个文档的操作，也就是常说的“多文档事务”，是非原子性的。由于document可以设计的非常复杂，包含多个“内嵌的”文档，因此单个文档的原子性为很多实际场景提供了必要的支持。<br>  尽管单文档原子操作很强大，但在很多场景下依然需要多文档事务。当执行一个由几个顺序操作组成的事务时，可能会出现某些问题，例如： </p>
+</blockquote>
+<blockquote>
+<ul>
+<li>原子性：如果某个操作失败了，在同一个事务中前面的操作回滚到最初的状态（即，要么全做，要么全部做）。 </li>
+<li>一致性：如果发生了严重故障将事务中断（比如：网络、硬件故障），数据库必须能够恢复到一致的状态。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>在需要多文档事务的场景中，你可以实现两阶段提交来完成场景需求。两阶段提交可以保证数据的一致性，如果发生错误，可以恢复到事务开始之前的状态。在事务执行过程中，无论发生什么情况都可以还原到数据和状态的准备阶段。</p>
+</blockquote>
+<p>自官方文档</p>
+<hr>
+<h2 id="二段的含义"><a href="#二段的含义" class="headerlink" title="二段的含义"></a>二段的含义</h2><p>两段指prepare阶段和commit阶段：<br><img src="http://oboi2pfvn.bkt.clouddn.com/two-phase-commit.png" alt="二段提交"><br><strong>Prepare</strong>：TM(transaction manager)给每个参与者（resource manager）发送prepare信息。每个参与者要么直接返回失败，要么在本地执行事务（记录日志和rollback的信息），但不commit。<br><strong>Commit</strong>：如果TM收到了任一参与者的失败消息或超时，那么TM会发rollback给其他的参与者，参与者会执行rollback并在最后释放锁资源。否则则发送commit让所有参与者完成事务。<br> 这样能保证在事务提交前尽可能完成所有能完成的工作，最后的commit是一个耗时很短的操作，错误概率相对很低。相比单一阶段的commit，两段式更加可靠但是会消耗更多时间，所以会提高锁资源的冲突，加大了死锁的发生几率。</p>
+<hr>
+<h2 id="MongoDB中的两段式提交"><a href="#MongoDB中的两段式提交" class="headerlink" title="MongoDB中的两段式提交"></a>MongoDB中的两段式提交</h2><p>以下来自官方文档中的典型例子。从A账户资金转移到B账户。<br>MongoDB中的一个accounts集合保存了账户的name和余额balance信息，以及当前事务的数组pendingTransactions。      </p>
+<ol>
+<li><p>首先创建两个账户：          </p>
+<pre><code>db.accounts.save({name: &quot;A&quot;, balance: 1000, pendingTransactions: []})
+db.accounts.save({name: &quot;B&quot;, balance: 1000, pendingTransactions: []})
+</code></pre></li>
+<li><p>然后创建<strong>事务</strong>集合transactions，来保存事务的信息——源账户source、目标账户dest、转移金额value、事务状态state。如果通过账户A转移一笔钱到账户B时，将通过下面的方式发起一个事务（state为initial）</p>
+<pre><code>db.transactions.save({source: &quot;A&quot;, destination: &quot;B&quot;, value: 100, state: &quot;initial&quot;})
+</code></pre></li>
+<li><p>找到transactions集合中对应initial状态文档，并改为pending状态</p>
+<pre><code>t = db.transactions.findOne({state: &quot;initial&quot;})
+db.transactions.update({_id: t._id, state: &quot;initial&quot;}, {$set: {state: &quot;pending&quot;}})
+</code></pre></li>
+<li><p>为每一个账户应用事务，并记录事务的_id。</p>
+<pre><code>db.accounts.update(
+   { name: t.source, pendingTransactions: { $ne: t._id } },
+   { $inc: { balance: -t.value }, $push: { pendingTransactions: t._id } })
+db.accounts.update(
+   { name: t.destination, pendingTransactions: { $ne: t._id } },
+   { $inc: { balance: t.value }, $push: { pendingTransactions: t._id } })
+</code></pre></li>
+<li><p>检查账户状态，是否应用成功</p>
+</li>
+<li><p>将事务文档状态改为commited</p>
+<pre><code>db.transactions.update({_id: t._id}, {$set: {state: &quot;committed&quot;}})
+</code></pre></li>
+<li><p>然后更新accounts集合，相当于一个释放锁的过程。</p>
+<pre><code>db.accounts.update({name: t.source}, {$pull: {pendingTransactions: t._id}})
+db.accounts.update({name: t.destination}, {$pull: {pendingTransactions: t._id}})
+</code></pre></li>
+<li><p>将事务状态设置为done。</p>
+<pre><code>db.transactions.update({_id: t._id}, {$set: {state: &quot;done&quot;}})
+</code></pre></li>
+</ol>
+<hr>
+<h2 id="深入理解"><a href="#深入理解" class="headerlink" title="深入理解"></a>深入理解</h2><p>对应二段的含义，该例子的        </p>
+<ul>
+<li><strong>2.</strong>对应就是二段含义图中的预备。该过程会记录事务发生的对象，及将要发生的变化内容。在这操作当中，可以尽可能把信息存储起来，，以方便事务失败的回滚</li>
+<li><strong>3.4.5.</strong>对应就是二段图中的就绪。即尝试完成该事务，把结果返回给事务管理器。</li>
+<li><strong>6.</strong>对应则是提交。确认事务的结果。</li>
+<li><strong>7.</strong>对应是已提交。告知事务管理器，把事务close掉。</li>
+</ul>
+<p>再结合上篇博文讲到<code>$isolated</code>操作符，应该把以上的所有update操作的都加上，以避免多请求的并发操作。</p>
+<hr>
+<h2 id="事务回滚"><a href="#事务回滚" class="headerlink" title="事务回滚"></a>事务回滚</h2><p>当出现一些不可恢复的错误时（例如其中一个文档不存在、文档条件(balance)不满足等），就需要进行回滚操作。有两种可能的回滚方法：</p>
+<ol>
+<li>完成设置事务状态为done后，你需要完全提交这个事务，而不能进行回滚操作。可以创建一个新的事务来转换源和目标的文档。</li>
+<li><p>完成设置事务状态为pending和d.将事务状态设置为commited之间，你需要执行下面的步骤：</p>
+<pre><code>//设置事务状态为canceling
+db.transactions.update({_id: t._id, state: &quot;pending&quot;}, {$set: {state: &quot;canceling&quot;}})   
+
+//回滚事务：执行一系列的相反的操作。
+db.accounts.update({name: t.source, pendingTransactions: t._id}, {$inc: {balance: t.value}, $pull: {pendingTransactions: t._id}})
+db.accounts.update({name: t.destination, pendingTransactions: t._id}, {$inc: {balance: -t.value}, $pull: {pendingTransactions: t._id}})
+db.accounts.find()
+
+//设置事务状态为canceled.
+db.transactions.update({_id: t._id}, {$set: {state: &quot;canceled&quot;}})
+</code></pre></li>
+</ol>
+<p><strong>参考 :</strong>  </p>
+<p><a href="https://docs.mongodb.com/manual/tutorial/perform-two-phase-commits/" target="_blank" rel="noopener">https://docs.mongodb.com/manual/tutorial/perform-two-phase-commits/</a>  mongodb官方二段提交官方文档</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>听说你想请我喝下午茶?~</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpeg" alt="Zack Ku 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpeg" alt="Zack Ku 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mongodb/" rel="tag"># mongodb</a>
+          
+            <a href="/tags/事务/" rel="tag"># 事务</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/mongo-transaction/" rel="next" title="Mongodb拥有事务的解决方案（一）">
+                <i class="fa fa-chevron-left"></i> Mongodb拥有事务的解决方案（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/git-tag/" rel="prev" title="Git基础之tag功能">
+                Git基础之tag功能 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar2.jpeg"
+                alt="Zack Ku" />
+            
+              <p class="site-author-name" itemprop="name">Zack Ku</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/zack-ku" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:gza_scnu@163.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://zack-blog.oss-cn-shenzhen.aliyuncs.com/image/blog-common/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png" target="_blank" title="WeChat" rel="external nofollow"><i class="fa fa-fw fa-wechat"></i></a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二段的含义"><span class="nav-number">2.</span> <span class="nav-text">二段的含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MongoDB中的两段式提交"><span class="nav-number">3.</span> <span class="nav-text">MongoDB中的两段式提交</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深入理解"><span class="nav-number">4.</span> <span class="nav-text">深入理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务回滚"><span class="nav-number">5.</span> <span class="nav-text">事务回滚</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zack Ku</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.5"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.5"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.5"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.5"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.5"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.1.8/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'sA9qkJThiH0lRmB46cSVdCJ3-gzGzoHsz',
+        appKey: 'eHgeHgsNtk4nHbcGFNcrz1W6',
+        placeholder: '说点什么...',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=6.0.5"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

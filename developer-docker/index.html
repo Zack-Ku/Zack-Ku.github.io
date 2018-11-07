@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="8df1kGxKl77ts3Y_6huryVjNQJWbf8mTVXeBvHNGtZk" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.5" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-z.png?v=6.0.5">
+
+
+  <link rel="mask-icon" href="/images/safari-pinned-tab-z.svg?v=6.0.5" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.0.5',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: 'USQASS7PS3',
+      apiKey: 'b2fc1956207dad6c82679e86986cfead',
+      indexName: 'blog',
+      hits: {"per_page":3},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="docker," />
+
+
+<meta name="description" content="随着微服务的发展，服务容器化已经是开发必须掌握的课题。很多开发以为，项目部署，集群管理与自己无关，那是运维的事，但如今技术百花齐放，不同语言的项目有不同的部署方式，部署java需要懂jvm、tomcat、mvn，部署node项目要懂npm、v8等等。假若一个集群有多种技术栈的项目，那么运维即使不精通，也要基本了解全部的知识，否则服务器出问题，也不知道从哪里入手，再加上各种杂七杂八的项目配置，">
+<meta name="keywords" content="docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker-开发人员必须要知道的Docker">
+<meta property="og:url" content="http://zackku.com/developer-docker/index.html">
+<meta property="og:site_name" content="Zack&#39;s Blog">
+<meta property="og:description" content="随着微服务的发展，服务容器化已经是开发必须掌握的课题。很多开发以为，项目部署，集群管理与自己无关，那是运维的事，但如今技术百花齐放，不同语言的项目有不同的部署方式，部署java需要懂jvm、tomcat、mvn，部署node项目要懂npm、v8等等。假若一个集群有多种技术栈的项目，那么运维即使不精通，也要基本了解全部的知识，否则服务器出问题，也不知道从哪里入手，再加上各种杂七杂八的项目配置，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-09-29T02:35:51.315Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker-开发人员必须要知道的Docker">
+<meta name="twitter:description" content="随着微服务的发展，服务容器化已经是开发必须掌握的课题。很多开发以为，项目部署，集群管理与自己无关，那是运维的事，但如今技术百花齐放，不同语言的项目有不同的部署方式，部署java需要懂jvm、tomcat、mvn，部署node项目要懂npm、v8等等。假若一个集群有多种技术栈的项目，那么运维即使不精通，也要基本了解全部的知识，否则服务器出问题，也不知道从哪里入手，再加上各种杂七杂八的项目配置，">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zack's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://zackku.com/developer-docker/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>Docker-开发人员必须要知道的Docker | Zack's Blog</title>
+  
+
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?877c602c29f8404e400126d43bc86593";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zack's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">这里应该有一句格言，但我们没有写</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-电子书">
+          <a href="/ebooks" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />电子书</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br />公众号：Zack说码</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zackku.com/developer-docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zack Ku">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar2.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zack's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Docker-开发人员必须要知道的Docker</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-05T00:00:00+08:00">2018-01-05</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具分享/" itemprop="url" rel="index"><span itemprop="name">工具分享</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/developer-docker/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/developer-docker/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>随着微服务的发展，服务容器化已经是开发必须掌握的课题。<br>很多开发以为，项目部署，集群管理与自己无关，那是运维的事，但如今技术百花齐放，不同语言的项目有不同的部署方式，部署java需要懂jvm、tomcat、mvn，部署node项目要懂npm、v8等等。假若一个集群有多种技术栈的项目，那么运维即使不精通，也要基本了解全部的知识，否则服务器出问题，也不知道从哪里入手，再加上各种杂七杂八的项目配置，<a id="more"></a>运维还要知道配置对应的业务内容，到最终只能增加人手去管理真正的运维工作（网络、ECS、负载、集群等等）。<br>所以，如何切分开发和运维的工作，是很重要的课题。docker是一个很好的切入点，开发负责编码开发，然后把服务级别的docker给打包好，交付给集群使用，运维管理docker集群。当然docker还有非常多的好处，一次打包，到处运行；配置好一个集群，可以随意开多个独立环境，对于产品复制和测试调试都非常好用。<br>下面一个项目中打包成一个docker服务的简单方案。</p>
+<hr>
+<h2 id="docker基本操作"><a href="#docker基本操作" class="headerlink" title="docker基本操作"></a>docker基本操作</h2><p>首先肯定要熟悉docker的基本操作和原理。对于这部分内容，网上有非常多教程，在此不再赘述。<br>提供个参考资料<br><a href="https://www.gitbook.com/book/yeasy/docker_practice/details" target="_blank" rel="noopener">Docker — 从入门到实践</a></p>
+<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><p>Dockerfile是用于构建镜像用的，指定某个镜像，执行一系列的操作，然后形成一个新的镜像。例如制作一个带node的centos镜像</p>
+<pre><code>FROM centos:centos7
+MAINTAINER zack@xxxx.com
+
+RUN yum -y update; yum clean all
+RUN yum -y install epel-release; yum clean all
+RUN yum -y install nodejs npm; yum clean all
+</code></pre><p>具体操作，参考上一节中的资料。</p>
+<h2 id="基础运行环境镜像构建"><a href="#基础运行环境镜像构建" class="headerlink" title="基础运行环境镜像构建"></a>基础运行环境镜像构建</h2><p>docker的内部是一种层级结构，上层是依赖下层构建的。例如一个安装了node的ubuntu，上层是node，下层是ubuntu，整体加起来就是带着node环境的ubuntu。在镜像制作后上传中，如果在仓库里面，底层已经存在的话，只会上传上层，但如果中间一层更改了，即上层依赖的层变更了，中间那层开始都要重新制作上传。</p>
+<pre><code>b56f2cfbd344: Pushed 
+2c3396684cbe: Pushing[================&gt;   ]  20.58MB/63.15MB
+58eb630a9b0e: Layer already exists 
+69b918931b8c: Layer already exists 
+8a61997aeb56: Layer already exists 
+1a4a50f5502f: Layer already exists 
+3f5bd7889e12: Layer already exists 
+25baa3ba1903: Layer already exists 
+5b1e27e74327: Layer already exists 
+04a094fe844e: Layer already exists 
+</code></pre><p>所以，构建镜像也是门学问，要减少每次构建的执行时间，高效完成。一个原则就是尽量保证底层是不变动的。实践来看，很容易就能分出两层，运行环境为底层、项目服务。<br><strong>运行环境</strong>，项目所依赖的基础运行环境，例如jdk、tomcat、node、npm等等。这层一般不需要变动，构建一次即可，并且可以供同类项目使用。<br><strong>项目服务</strong>，业务层面可对外提供服务的层级。一般把打包好的war包、可执行的项目放这里，启动该镜像即可提供服务。     </p>
+<p>基础镜像一般不以ubunut或centos为基础构建，这些版本docker镜像至少要几百M，构建出来体积太大，而且很多功能不需要，而且很占空间和带宽。所以大多基础镜像的构建是基于alpine构建的，一般才几十M。apline最linux可运行最简单的系统，或后续需要一些系统工具例如curl、wget等都需要额外安装。</p>
+<p>简单的镜像可以在<br><a href="https://github.com/docker-library" target="_blank" rel="noopener">docker-library</a> 找到对应的官方Dockerfile，然后再此基础上修改。<br>下面以构建java web项目为例，构建一个jdk、tomcat的基础环境镜像。</p>
+<pre><code>FROM openjdk:8-jre-alpine
+
+ENV CATALINA_HOME /usr/local/tomcat
+ENV PATH $CATALINA_HOME/bin:$PATH
+RUN mkdir -p &quot;$CATALINA_HOME&quot;
+WORKDIR $CATALINA_HOME
+
+# let &quot;Tomcat Native&quot; live somewhere isolated
+ENV TOMCAT_NATIVE_LIBDIR $CATALINA_HOME/native-jni-lib
+ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$TOMCAT_NATIVE_LIBDIR
+
+RUN apk add --no-cache gnupg
+
+# see https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/KEYS
+# see also &quot;update.sh&quot; (https://github.com/docker-library/tomcat/blob/master/update.sh)
+ENV GPG_KEYS 05AB33110949707C93A279E3D3EFE6B686867BA6 07E48665A34DCAFAE522E5E6266191C37C037D42 47309207D818FFD8DCD3F83F1931D684307A10A5 541FBE7D8F78B25E055DDEE13C370389288584E7 61B832AC2F1C5A90F0F9B00A1C506407564C17A3 713DA88BE50911535FE716F5208B0AB1D63011C7 79F7026C690BAA50B92CD8B66A3AD3F4F22C4FED 9BA44C2621385CB966EBA586F72C284D731FABEE A27677289986DB50844682F8ACB77FC2E86E29AC A9C5DF4D22E99998D9875A5110C01C5A2F6059E7 DCFD35E0BF8CA7344752DE8B6FB21E8933C60243 F3A04C595DB5B6A5F1ECA43E3B7BBB100D811BBE F7DA48BB64BCB84ECBA7EE6935CD23C10D498E23
+RUN set -ex; \
+    for key in $GPG_KEYS; do \
+        gpg --keyserver ha.pool.sks-keyservers.net --recv-keys &quot;$key&quot;; \
+    done
+
+ENV TOMCAT_MAJOR 8
+ENV TOMCAT_VERSION 8.0.48
+ENV TOMCAT_SHA1 d2446c127c9b11f88def11e542af98998071d91d
+
+ENV TOMCAT_TGZ_URLS \
+# https://issues.apache.org/jira/browse/INFRA-8753?focusedCommentId=14735394#comment-14735394
+https://www.apache.org/dyn/closer.cgi?action=download&amp;filename=tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
+# if the version is outdated, we might have to pull from the dist/archive :/
+https://www-us.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
+https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
+https://archive.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz
+
+ENV TOMCAT_ASC_URLS \
+https://www.apache.org/dyn/closer.cgi?action=download&amp;filename=tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz.asc \
+# not all the mirrors actually carry the .asc files :&apos;(
+https://www-us.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz.asc \
+https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz.asc \
+https://archive.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz.asc
+
+RUN set -eux; \
+    \
+    apk add --no-cache --virtual .fetch-deps \
+        ca-certificates \
+        openssl \
+    ; \
+    \
+    success=; \
+    for url in $TOMCAT_TGZ_URLS; do \
+        if wget -O tomcat.tar.gz &quot;$url&quot;; then \
+            success=1; \
+            break; \
+        fi; \
+    done; \
+    [ -n &quot;$success&quot; ]; \
+    \
+    echo &quot;$TOMCAT_SHA1 *tomcat.tar.gz&quot; | sha1sum -c -; \
+    \
+    success=; \
+    for url in $TOMCAT_ASC_URLS; do \
+        if wget -O tomcat.tar.gz.asc &quot;$url&quot;; then \
+            success=1; \
+            break; \
+        fi; \
+    done; \
+    [ -n &quot;$success&quot; ]; \
+    \
+gpg --batch --verify tomcat.tar.gz.asc tomcat.tar.gz; \
+tar -xvf tomcat.tar.gz --strip-components=1; \
+rm bin/*.bat; \
+rm tomcat.tar.gz*; \
+\
+nativeBuildDir=&quot;$(mktemp -d)&quot;; \
+tar -xvf bin/tomcat-native.tar.gz -C &quot;$nativeBuildDir&quot; --strip-components=1; \
+apk add --no-cache --virtual .native-build-deps \
+    apr-dev \
+    coreutils \
+    dpkg-dev dpkg \
+    gcc \
+    libc-dev \
+    make \
+    &quot;openjdk${JAVA_VERSION%%[-~bu]*}&quot;=&quot;$JAVA_ALPINE_VERSION&quot; \
+    openssl-dev \
+; \
+( \
+    export CATALINA_HOME=&quot;$PWD&quot;; \
+    cd &quot;$nativeBuildDir/native&quot;; \
+    gnuArch=&quot;$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)&quot;; \
+    ./configure \
+        --build=&quot;$gnuArch&quot; \
+        --libdir=&quot;$TOMCAT_NATIVE_LIBDIR&quot; \
+        --prefix=&quot;$CATALINA_HOME&quot; \
+        --with-apr=&quot;$(which apr-1-config)&quot; \
+        --with-java-home=&quot;$(docker-java-home)&quot; \
+        --with-ssl=yes; \
+    make -j &quot;$(nproc)&quot;; \
+    make install; \
+); \
+runDeps=&quot;$( \
+    scanelf --needed --nobanner --format &apos;%n#p&apos; --recursive &quot;$TOMCAT_NATIVE_LIBDIR&quot; \
+        | tr &apos;,&apos; &apos;\n&apos; \
+        | sort -u \
+        | awk &apos;system(&quot;[ -e /usr/local/lib/&quot; $1 &quot; ]&quot;) == 0 { next } { print &quot;so:&quot; $1 }&apos; \
+)&quot;; \
+apk add --virtual .tomcat-native-rundeps $runDeps; \
+apk del .fetch-deps .native-build-deps; \
+rm -rf &quot;$nativeBuildDir&quot;; \
+rm bin/tomcat-native.tar.gz; \
+\
+# sh removes env vars it doesn&apos;t support (ones with periods)
+# https://github.com/docker-library/tomcat/issues/77
+apk add --no-cache bash; \
+find ./bin/ -name &apos;*.sh&apos; -exec sed -ri &apos;s|^#!/bin/sh$|#!/usr/bin/env bash|&apos; &apos;{}&apos; +
+
+# verify Tomcat Native is working properly
+RUN set -e \
+&amp;&amp; nativeLines=&quot;$(catalina.sh configtest 2&gt;&amp;1)&quot; \
+&amp;&amp; nativeLines=&quot;$(echo &quot;$nativeLines&quot; | grep &apos;Apache Tomcat Native&apos;)&quot; \
+&amp;&amp; nativeLines=&quot;$(echo &quot;$nativeLines&quot; | sort -u)&quot; \
+&amp;&amp; if ! echo &quot;$nativeLines&quot; | grep &apos;INFO: Loaded APR based Apache Tomcat Native library&apos; &gt;&amp;2; then \
+    echo &gt;&amp;2 &quot;$nativeLines&quot;; \
+    exit 1; \
+fi
+
+# install maven
+#RUN wget http://apache-mirror.rbc.ru/pub/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+#RUN tar xzvf apache-maven-3.3.9-bin.tar.gz
+#RUN cp -R apache-maven-3.3.9 /usr/local/bin
+#RUN export PATH=apache-maven-3.3.9/bin:$PATH
+#RUN export PATH=/usr/local/bin/apache-maven-3.3.9/bin:$PATH
+#RUN ln -s /usr/local/bin/apache-maven-3.3.9/bin/mvn /usr/local/bin/mvn
+#RUN ls -l /usr/local/bin
+#RUN echo $PATH
+
+#EXPOSE 8080
+#CMD [&quot;catalina.sh&quot;, &quot;run&quot;]
+</code></pre><p>这里面不构建maven环境。因为maven是用于项目的构建，而不是用于执行的。项目的构建应该是构建的机器上做，以减少docker的打包成本。同时也不需要在基础镜像中指定暴露端口和启动命令，这部分应在项目镜像构建里面做。</p>
+<h2 id="项目执行镜像构建"><a href="#项目执行镜像构建" class="headerlink" title="项目执行镜像构建"></a>项目执行镜像构建</h2><p>有了基础的镜像，在此层做的东西就非常简单了，只要把项目运行的东西往docker里面塞，让docker里面的服务跑起来就行了。例如java web项目，需要将war包放到docker里面的的tomcat目录，暴露对应端口，指定镜像启动命令。</p>
+<pre><code>FROM registry.xxxx/xxxx:latest
+
+ENV CATALINA_HOME /usr/local/tomcat
+ENV MODEL xxx
+#ENV APP /app
+
+WORKDIR $CATALINA_HOME/webapps
+
+COPY ${MODEL}/target/*war .
+
+EXPOSE 8080
+CMD [&quot;catalina.sh&quot;, &quot;run&quot;]
+</code></pre><p>到此镜像可执行的镜像已经构建完了。细心的同学可能发现了，到目前为止都没有配置过项目的启动参数。是的，镜像本身不应该包含项目的环境变量参数等，它应该在容器启动时候指定输入。否则每次变更配置需要重新构建，重新打包上传，不利于镜像扩展使用。在后面会介绍在启动时添加环境变量的方案。</p>
+<h2 id="Make批处理"><a href="#Make批处理" class="headerlink" title="Make批处理"></a>Make批处理</h2><p>构建一个镜像，经常会包含多个命令，并且很多时候需要切换执行目录或复制移动文件。所以日常开发用make来配合镜像的构建上传下载打tag是非常有必要的，特别是要制作不同产品，不同环境的镜像。</p>
+<pre><code>base:
+    echo building ${NAME}-base:${TAG}
+    cp ${model}/docker/base/Dockerfile .
+    docker build -t ${REGISTRY}/${NAME}-base:${TAG} .
+    docker tag ${REGISTRY}/${NAME}-base:${TAG} ${REGISTRY}/${NAME}-base:latest
+    rm Dockerfile
+    docker push ${REGISTRY}/${NAME}-base:${TAG}
+    docker push ${REGISTRY}/${NAME}-base:latest
+
+war:
+       # TODO 加MD5校验，代码没改，不用执行
+    echo package war ${model}
+    mvn -pl ${model} -am -Dmaven.test.skip=true -Denv=xxx install
+
+local:war
+    echo building ${NAME}:${TAG}
+    cp ${model}/docker/local/Dockerfile .
+    docker build -t ${REGISTRY}/${NAME}-${model}:latest .
+    #docker build -t ${REGISTRY}/${NAME}-${model}:${TAG} .
+    #docker tag ${REGISTRY}/${NAME}-${model}:${TAG} ${REGISTRY}/${NAME}-${model}:${FIXTAG}
+    rm Dockerfile
+    #docker push ${REGISTRY}/${NAME}-${model}:${TAG}
+    #docker push ${REGISTRY}/${NAME}-${model}:${FIXTAG}
+    docker push ${REGISTRY}/${NAME}-${model}:latest
+</code></pre><h2 id="一键拉起一套栈"><a href="#一键拉起一套栈" class="headerlink" title="一键拉起一套栈"></a>一键拉起一套栈</h2><p>很多时候，一个web项目需要很多依赖的服务，例如db，redis，zookeeper等等。如果想一套拉起多个容器服务，可以用docker-compose。很多人搞不清Dockerfile和docker-compose的区别，前者是构建镜像用的，一个是创建容器，即就是镜像与容器的关系，所以到底什么操作在Dockerfile里面做，什么操作在compose里面做，搞清楚这个关系就很容易区分了。<br>很多集群管理工具，像rancher、k8s都支持用docker-compose导出一套栈进来管理。</p>
+<p>以下是一个mysql、zookeeper、memcached及web服务自身的例子。执行docker-compose up即可一套拉起。</p>
+<pre><code>version: &quot;2&quot;
+services:
+    mysql:
+        image:mysql
+    zookeeper:
+        image: zookeeper
+    memcached:
+        image: memcached
+    app:
+        image: registry.xxxx/xxxxx:latest
+        environment:
+            - JAVA_OPTS=-server -Xms512m -Xmx512m -Xss256K -Duser.timezone=GMT+08 
+        ports:
+            - &quot;8080:8080&quot;
+        depends_on:
+            - memcached
+            - zookeeper
+            - mysql
+        links:
+            - memcached
+            - zookeeper
+            - mysql
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>听说你想请我喝下午茶?~</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpeg" alt="Zack Ku 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpeg" alt="Zack Ku 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/docker/" rel="tag"># docker</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Mongo-exceed-size/" rel="next" title="Mongo Aggregation Result Exceeds Maximum Document Size解决方法">
+                <i class="fa fa-chevron-left"></i> Mongo Aggregation Result Exceeds Maximum Document Size解决方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo-blog/" rel="prev" title="博客重构之路——Jekyll迁移到Hexo">
+                博客重构之路——Jekyll迁移到Hexo <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar2.jpeg"
+                alt="Zack Ku" />
+            
+              <p class="site-author-name" itemprop="name">Zack Ku</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/zack-ku" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:gza_scnu@163.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://zack-blog.oss-cn-shenzhen.aliyuncs.com/image/blog-common/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png" target="_blank" title="WeChat" rel="external nofollow"><i class="fa fa-fw fa-wechat"></i></a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker基本操作"><span class="nav-number">1.</span> <span class="nav-text">docker基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础运行环境镜像构建"><span class="nav-number">3.</span> <span class="nav-text">基础运行环境镜像构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目执行镜像构建"><span class="nav-number">4.</span> <span class="nav-text">项目执行镜像构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Make批处理"><span class="nav-number">5.</span> <span class="nav-text">Make批处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一键拉起一套栈"><span class="nav-number">6.</span> <span class="nav-text">一键拉起一套栈</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zack Ku</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.5"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.5"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.5"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.5"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.5"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.1.8/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'sA9qkJThiH0lRmB46cSVdCJ3-gzGzoHsz',
+        appKey: 'eHgeHgsNtk4nHbcGFNcrz1W6',
+        placeholder: '说点什么...',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=6.0.5"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

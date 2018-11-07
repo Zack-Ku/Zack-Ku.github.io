@@ -1,0 +1,797 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+    
+  <url>
+    <loc>http://zackku.com/redis-rdb-aof/</loc>
+    <lastmod>2018-11-02T10:04:22.692Z</lastmod>
+    <data>
+        <display>
+        <title>进阶的Redis之数据持久化RDB与AOF</title>
+        <pubTime>2018-11-02T07:33:30.000Z</pubTime>
+        
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="Redis进阶" url="http://zackku.com/categories/Redis%E8%BF%9B%E9%98%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/cap/</loc>
+    <lastmod>2018-10-22T12:08:28.366Z</lastmod>
+    <data>
+        <display>
+        <title>浅谈分布式CAP定理</title>
+        <pubTime>2018-10-17T11:29:13.000Z</pubTime>
+        
+        <tag>CAP</tag>
+         
+         
+           
+             
+              <breadCrumb title="计算机理论" url="http://zackku.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%90%86%E8%AE%BA/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/redis-sentinel/</loc>
+    <lastmod>2018-10-22T11:49:30.639Z</lastmod>
+    <data>
+        <display>
+        <title>进阶的Redis之Sentinel原理及实战</title>
+        <pubTime>2018-10-22T11:27:13.000Z</pubTime>
+        
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="Redis进阶" url="http://zackku.com/categories/Redis%E8%BF%9B%E9%98%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+  <url>
+    <loc>http://zackku.com/spring-ioc/</loc>
+    <lastmod>2018-10-17T08:28:22.804Z</lastmod>
+    <data>
+        <display>
+        <title>零基础带你看Spring源码——IOC控制反转</title>
+        <pubTime>2018-09-03T14:09:54.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>ioc</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring分析学习" url="http://zackku.com/categories/Spring%E5%88%86%E6%9E%90%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/java-thread-threadpoolexecutor/</loc>
+    <lastmod>2018-10-17T08:11:24.019Z</lastmod>
+    <data>
+        <display>
+        <title>你真的懂ThreadPoolExecutor线程池技术吗？看了源码你会有全新的认识</title>
+        <pubTime>2018-08-28T09:12:58.000Z</pubTime>
+        
+        <tag>多线程</tag>
+         
+        <tag>Java</tag>
+         
+        <tag>线程池</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java多线程" url="http://zackku.com/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/java-thread-reentranreedwritelock/</loc>
+    <lastmod>2018-10-17T08:11:20.810Z</lastmod>
+    <data>
+        <display>
+        <title>Java多线程——ReentrantReadWriteLock源码阅读</title>
+        <pubTime>2018-08-26T17:49:26.000Z</pubTime>
+        
+        <tag>多线程</tag>
+         
+        <tag>Java</tag>
+         
+        <tag>锁</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java多线程" url="http://zackku.com/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/java-thread-reentrantlock/</loc>
+    <lastmod>2018-10-17T08:11:17.673Z</lastmod>
+    <data>
+        <display>
+        <title>Java多线程——ReentrantLock源码阅读</title>
+        <pubTime>2018-08-26T13:37:05.000Z</pubTime>
+        
+        <tag>多线程</tag>
+         
+        <tag>Java</tag>
+         
+        <tag>锁</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java多线程" url="http://zackku.com/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/java-thread-aqs/</loc>
+    <lastmod>2018-10-17T08:11:14.308Z</lastmod>
+    <data>
+        <display>
+        <title>Java多线程——AQS框架源码阅读</title>
+        <pubTime>2018-08-22T03:10:03.000Z</pubTime>
+        
+        <tag>多线程</tag>
+         
+        <tag>Java</tag>
+         
+        <tag>锁</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java多线程" url="http://zackku.com/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/java-thread-future/</loc>
+    <lastmod>2018-10-17T08:11:10.678Z</lastmod>
+    <data>
+        <display>
+        <title>Java异步编程——深入源码分析FutureTask</title>
+        <pubTime>2018-10-09T02:09:52.000Z</pubTime>
+        
+        <tag>源码分析</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java多线程" url="http://zackku.com/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/jvm-gc-collector/</loc>
+    <lastmod>2018-10-17T08:11:07.641Z</lastmod>
+    <data>
+        <display>
+        <title>一文了解JVM全部垃圾回收器，从Serial到ZGC</title>
+        <pubTime>2018-09-28T07:31:15.000Z</pubTime>
+        
+        <tag>JVM</tag>
+         
+        <tag>GC</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM深入" url="http://zackku.com/categories/JVM%E6%B7%B1%E5%85%A5/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/java-dynamic-proxy/</loc>
+    <lastmod>2018-10-17T08:11:04.535Z</lastmod>
+    <data>
+        <display>
+        <title>你真的完全了解Java动态代理吗？看这篇就够了</title>
+        <pubTime>2018-09-07T08:52:09.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>动态代理</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java基础" url="http://zackku.com/categories/Java%E5%9F%BA%E7%A1%80/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/spring-aop/</loc>
+    <lastmod>2018-10-17T08:10:59.012Z</lastmod>
+    <data>
+        <display>
+        <title>从源码入手，一文带你读懂Spring AOP面向切面编程</title>
+        <pubTime>2018-09-13T14:45:56.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>aop</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring分析学习" url="http://zackku.com/categories/Spring%E5%88%86%E6%9E%90%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+  <url>
+    <loc>http://zackku.com/jvm-gc-base/</loc>
+    <lastmod>2018-10-17T08:04:09.870Z</lastmod>
+    <data>
+        <display>
+        <title>必知必会JVM垃圾回收——对象搜索算法与回收算法</title>
+        <pubTime>2018-09-27T07:09:36.000Z</pubTime>
+        
+        <tag>JVM</tag>
+         
+        <tag>GC</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM深入" url="http://zackku.com/categories/JVM%E6%B7%B1%E5%85%A5/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/git-tag/</loc>
+    <lastmod>2018-09-29T02:43:22.981Z</lastmod>
+    <data>
+        <display>
+        <title>Git基础之tag功能</title>
+        <pubTime>2016-08-06T16:00:00.000Z</pubTime>
+        
+        <tag>git</tag>
+         
+         
+           
+             
+              <breadCrumb title="其他技术" url="http://zackku.com/categories/%E5%85%B6%E4%BB%96%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/jvm-RAM-model/</loc>
+    <lastmod>2018-09-29T02:41:19.003Z</lastmod>
+    <data>
+        <display>
+        <title>JVM学习记录——运行时数据区</title>
+        <pubTime>2018-04-26T01:43:26.000Z</pubTime>
+        
+        <tag>JVM</tag>
+         
+        <tag>内存模型</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM深入" url="http://zackku.com/categories/JVM%E6%B7%B1%E5%85%A5/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/jvm-gc-object-search/</loc>
+    <lastmod>2018-09-29T02:41:14.285Z</lastmod>
+    <data>
+        <display>
+        <title>JVM学习记录——GC对象搜索算法</title>
+        <pubTime>2018-05-30T07:42:44.000Z</pubTime>
+        
+        <tag>JVM</tag>
+         
+        <tag>GC</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM深入" url="http://zackku.com/categories/JVM%E6%B7%B1%E5%85%A5/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/spring-transaction-in-class-problem/</loc>
+    <lastmod>2018-09-29T02:38:58.279Z</lastmod>
+    <data>
+        <display>
+        <title>Spring AOP Transactional注解不能用于内部调用问题</title>
+        <pubTime>2018-05-25T08:18:53.000Z</pubTime>
+        
+        <tag>bug</tag>
+         
+        <tag>Spring</tag>
+         
+        <tag>transaction</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring分析学习" url="http://zackku.com/categories/Spring%E5%88%86%E6%9E%90%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/spring-scan-problem/</loc>
+    <lastmod>2018-09-29T02:38:53.254Z</lastmod>
+    <data>
+        <display>
+        <title>Spring中Interface与对应Impl Bean扫描冲突问题</title>
+        <pubTime>2018-05-22T08:16:03.000Z</pubTime>
+        
+        <tag>bug</tag>
+         
+        <tag>Spring</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring分析学习" url="http://zackku.com/categories/Spring%E5%88%86%E6%9E%90%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/Markdown/</loc>
+    <lastmod>2018-09-29T02:37:20.339Z</lastmod>
+    <data>
+        <display>
+        <title>Markdown基础语法</title>
+        <pubTime>2016-07-06T16:00:00.000Z</pubTime>
+        
+        <tag>markdown</tag>
+         
+         
+           
+             
+              <breadCrumb title="其他技术" url="http://zackku.com/categories/%E5%85%B6%E4%BB%96%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/built-blog/</loc>
+    <lastmod>2018-09-29T02:37:10.976Z</lastmod>
+    <data>
+        <display>
+        <title>基于Jekyll和github Pages博客搭建全过程(一)</title>
+        <pubTime>2016-07-08T16:00:00.000Z</pubTime>
+        
+        <tag>blog</tag>
+         
+        <tag>jekyll</tag>
+         
+        <tag>github pages</tag>
+         
+         
+           
+             
+              <breadCrumb title="工具分享" url="http://zackku.com/categories/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%AB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/built-blog-2/</loc>
+    <lastmod>2018-09-29T02:37:07.698Z</lastmod>
+    <data>
+        <display>
+        <title>基于Jekyll和github Pages博客搭建全过程(二)</title>
+        <pubTime>2016-07-09T16:00:00.000Z</pubTime>
+        
+        <tag>blog</tag>
+         
+        <tag>jekyll</tag>
+         
+         
+           
+             
+              <breadCrumb title="工具分享" url="http://zackku.com/categories/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%AB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/built-blog-3/</loc>
+    <lastmod>2018-09-29T02:37:02.546Z</lastmod>
+    <data>
+        <display>
+        <title>基于Jekyll和github Pages博客搭建全过程(三)</title>
+        <pubTime>2016-07-09T16:00:00.000Z</pubTime>
+        
+        <tag>blog</tag>
+         
+        <tag>jekyll</tag>
+         
+        <tag>域名</tag>
+         
+        <tag>DNS</tag>
+         
+         
+           
+             
+              <breadCrumb title="工具分享" url="http://zackku.com/categories/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%AB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/mongo-transaction/</loc>
+    <lastmod>2018-09-29T02:36:54.391Z</lastmod>
+    <data>
+        <display>
+        <title>Mongodb拥有事务的解决方案（一）</title>
+        <pubTime>2016-07-30T16:00:00.000Z</pubTime>
+        
+        <tag>mongodb</tag>
+         
+        <tag>事务</tag>
+         
+         
+           
+             
+              <breadCrumb title="MongoDB" url="http://zackku.com/categories/MongoDB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/mongo-transaction2/</loc>
+    <lastmod>2018-09-29T02:36:51.367Z</lastmod>
+    <data>
+        <display>
+        <title>Mongodb拥有事务的解决方案（二）</title>
+        <pubTime>2016-08-05T16:00:00.000Z</pubTime>
+        
+        <tag>mongodb</tag>
+         
+        <tag>事务</tag>
+         
+         
+           
+             
+              <breadCrumb title="MongoDB" url="http://zackku.com/categories/MongoDB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/mongodb-unwind/</loc>
+    <lastmod>2018-09-29T02:36:41.744Z</lastmod>
+    <data>
+        <display>
+        <title>MongoDB之$unwind操作符</title>
+        <pubTime>2016-08-08T16:00:00.000Z</pubTime>
+        
+        <tag>mongodb</tag>
+         
+         
+           
+             
+              <breadCrumb title="MongoDB" url="http://zackku.com/categories/MongoDB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/mongo-update-array/</loc>
+    <lastmod>2018-09-29T02:36:36.948Z</lastmod>
+    <data>
+        <display>
+        <title>MongoDB更新数组中某个对象的元素</title>
+        <pubTime>2016-08-19T16:00:00.000Z</pubTime>
+        
+        <tag>mongodb</tag>
+         
+         
+           
+             
+              <breadCrumb title="MongoDB" url="http://zackku.com/categories/MongoDB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/picture-qiniu/</loc>
+    <lastmod>2018-09-29T02:36:29.842Z</lastmod>
+    <data>
+        <display>
+        <title>七牛静态资源存储</title>
+        <pubTime>2016-08-09T16:00:00.000Z</pubTime>
+        
+        <tag>七牛</tag>
+         
+         
+           
+             
+              <breadCrumb title="工具分享" url="http://zackku.com/categories/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%AB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/number-epsilon/</loc>
+    <lastmod>2018-09-29T02:36:10.051Z</lastmod>
+    <data>
+        <display>
+        <title>ES6-Number.EPSILON 用法</title>
+        <pubTime>2017-04-29T16:00:00.000Z</pubTime>
+        
+        <tag>ES6</tag>
+         
+         
+           
+             
+              <breadCrumb title="JavaScript" url="http://zackku.com/categories/JavaScript/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/Mongo-exceed-size/</loc>
+    <lastmod>2018-09-29T02:35:58.220Z</lastmod>
+    <data>
+        <display>
+        <title>Mongo Aggregation Result Exceeds Maximum Document Size解决方法</title>
+        <pubTime>2017-06-04T16:00:00.000Z</pubTime>
+        
+        <tag>mongodb</tag>
+         
+         
+           
+             
+              <breadCrumb title="踩坑记录" url="http://zackku.com/categories/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/developer-docker/</loc>
+    <lastmod>2018-09-29T02:35:51.315Z</lastmod>
+    <data>
+        <display>
+        <title>Docker-开发人员必须要知道的Docker</title>
+        <pubTime>2018-01-04T16:00:00.000Z</pubTime>
+        
+        <tag>docker</tag>
+         
+         
+           
+             
+              <breadCrumb title="工具分享" url="http://zackku.com/categories/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%AB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/hexo-blog/</loc>
+    <lastmod>2018-09-29T02:35:43.666Z</lastmod>
+    <data>
+        <display>
+        <title>博客重构之路——Jekyll迁移到Hexo</title>
+        <pubTime>2018-03-13T12:25:56.000Z</pubTime>
+        
+        <tag>blog</tag>
+         
+        <tag>hexo</tag>
+         
+         
+           
+             
+              <breadCrumb title="工具分享" url="http://zackku.com/categories/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%AB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/jump-servers/</loc>
+    <lastmod>2018-09-29T02:35:27.962Z</lastmod>
+    <data>
+        <display>
+        <title>服务器/跳板机登录CMD命令</title>
+        <pubTime>2018-04-02T01:02:19.000Z</pubTime>
+        
+        <tag>cmd</tag>
+         
+        <tag>跳板机</tag>
+         
+         
+           
+             
+              <breadCrumb title="工具分享" url="http://zackku.com/categories/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%AB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/db-defined-bug/</loc>
+    <lastmod>2018-09-29T02:35:17.257Z</lastmod>
+    <data>
+        <display>
+        <title>记一个SQL字段定义bug</title>
+        <pubTime>2018-04-07T14:37:07.000Z</pubTime>
+        
+        <tag>bug</tag>
+         
+        <tag>sql</tag>
+         
+         
+           
+             
+              <breadCrumb title="踩坑记录" url="http://zackku.com/categories/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/java-thread-lock-base/</loc>
+    <lastmod>2018-09-29T02:32:56.695Z</lastmod>
+    <data>
+        <display>
+        <title>Java多线程——锁概念与锁优化</title>
+        <pubTime>2018-08-08T02:17:30.000Z</pubTime>
+        
+        <tag>多线程</tag>
+         
+        <tag>Java</tag>
+         
+        <tag>锁</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java多线程" url="http://zackku.com/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+    
+  <url>
+    <loc>http://zackku.com/think-Elon-Musk/</loc>
+    <lastmod>2018-03-19T02:22:39.803Z</lastmod>
+    <data>
+        <display>
+        <title>感悟《硅谷钢铁侠:埃隆·马斯克的冒险人生》</title>
+        <pubTime>2018-03-17T05:49:44.000Z</pubTime>
+        
+        <tag>Elon Musk</tag>
+         
+        <tag>Tesla</tag>
+         
+         
+           
+             
+              <breadCrumb title="感悟" url="http://zackku.com/categories/%E6%84%9F%E6%82%9F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/bee-out-of-control/</loc>
+    <lastmod>2018-03-17T07:08:28.478Z</lastmod>
+    <data>
+        <display>
+        <title>《失控》中的群蜂思维</title>
+        <pubTime>2018-03-17T06:46:47.000Z</pubTime>
+        
+        <tag>失控</tag>
+         
+        <tag>群蜂思维</tag>
+         
+         
+           
+             
+              <breadCrumb title="感悟" url="http://zackku.com/categories/%E6%84%9F%E6%82%9F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+</urlset>

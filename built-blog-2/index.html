@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="8df1kGxKl77ts3Y_6huryVjNQJWbf8mTVXeBvHNGtZk" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.5" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-z.png?v=6.0.5">
+
+
+  <link rel="mask-icon" href="/images/safari-pinned-tab-z.svg?v=6.0.5" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.0.5',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: 'USQASS7PS3',
+      apiKey: 'b2fc1956207dad6c82679e86986cfead',
+      indexName: 'blog',
+      hits: {"per_page":3},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="blog,jekyll," />
+
+
+<meta name="description" content="基于jekyll和github pages博客搭建全过程(一)   基于jekyll和github pages博客搭建全过程(三) 上一篇文章说到了博客的基本搭建和编写。如果对个人博客要求不高的同学其实就已经足够了。本文主要是介绍如何更加深入定制个人博客。">
+<meta name="keywords" content="blog,jekyll">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Jekyll和github Pages博客搭建全过程(二)">
+<meta property="og:url" content="http://zackku.com/built-blog-2/index.html">
+<meta property="og:site_name" content="Zack&#39;s Blog">
+<meta property="og:description" content="基于jekyll和github pages博客搭建全过程(一)   基于jekyll和github pages博客搭建全过程(三) 上一篇文章说到了博客的基本搭建和编写。如果对个人博客要求不高的同学其实就已经足够了。本文主要是介绍如何更加深入定制个人博客。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oboi2pfvn.bkt.clouddn.com/folder-of-jekyll.png">
+<meta property="og:updated_time" content="2018-09-29T02:37:07.698Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于Jekyll和github Pages博客搭建全过程(二)">
+<meta name="twitter:description" content="基于jekyll和github pages博客搭建全过程(一)   基于jekyll和github pages博客搭建全过程(三) 上一篇文章说到了博客的基本搭建和编写。如果对个人博客要求不高的同学其实就已经足够了。本文主要是介绍如何更加深入定制个人博客。">
+<meta name="twitter:image" content="http://oboi2pfvn.bkt.clouddn.com/folder-of-jekyll.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zack's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://zackku.com/built-blog-2/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>基于Jekyll和github Pages博客搭建全过程(二) | Zack's Blog</title>
+  
+
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?877c602c29f8404e400126d43bc86593";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zack's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">这里应该有一句格言，但我们没有写</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-电子书">
+          <a href="/ebooks" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />电子书</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br />公众号：Zack说码</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zackku.com/built-blog-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zack Ku">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar2.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zack's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">基于Jekyll和github Pages博客搭建全过程(二)</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-10T00:00:00+08:00">2016-07-10</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具分享/" itemprop="url" rel="index"><span itemprop="name">工具分享</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/built-blog-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/built-blog-2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://zackku.com/built-blog">基于jekyll和github pages博客搭建全过程(一)</a>  </p>
+<p><a href="http://zackku.com/built-blog-3">基于jekyll和github pages博客搭建全过程(三)</a></p>
+<p>上一篇文章说到了博客的基本搭建和编写。如果对个人博客要求不高的同学其实就已经足够了。<br>本文主要是介绍如何更加深入定制个人博客。</p>
+<a id="more"></a>
+<h2 id="本地安装jekyll"><a href="#本地安装jekyll" class="headerlink" title="本地安装jekyll"></a>本地安装jekyll</h2><p>如果已经完成上文的博客搭建，相信你已经对jekyll的项目结构有一定的了解。若你想更好的定制自己的blog，<br>那么肯定需要自己修改项目的源码，改它的样式界面。但是每次修改代码要上传到github，等待编译刷新页面才能看到效果，<br>那效率就太慢了。所以想要高效地修改维护自己的blog，免不了要本地安装jekyll。以下是linux系统的安装步骤</p>
+<h3 id="ruby安装"><a href="#ruby安装" class="headerlink" title="ruby安装"></a>ruby安装</h3><p>ruby安装是个门槛，因为新版的jekyll需要2.0以上的ruby，但是你直接用apt-get install命令安装，最多只会安装到1.9版本。<br>但是有两个巧妙的解决方法</p>
+<ul>
+<li>直接安装ruby2.0 <code>$ sudo apt-get install ruby2.0</code>，然后用关联命令关联为ruby</li>
+<li>直接用命令<code>$ sudo apt-get install ruby</code>安装1.9的ruby，待会安装jekyll，不要安装最新版，安装2.5.0版本</li>
+<li>用RVM去安装指定版本的ruby，比较麻烦，参考 <a href="https://ruby-china.org/wiki/install_ruby_guide" target="_blank" rel="noopener">https://ruby-china.org/wiki/install_ruby_guide</a></li>
+</ul>
+<h3 id="rubygems安装"><a href="#rubygems安装" class="headerlink" title="rubygems安装"></a>rubygems安装</h3><p>rubygems是ruby的包管理器，就像node的npm，<br>如果你按上面步骤安装到这一步，一般都会失败，因为rubygems还依赖ruby-dev，所以在安装rubygems前，<br>需要执行<code>$ sudo apt-get install ruby-dev</code></p>
+<h3 id="jekyll安装"><a href="#jekyll安装" class="headerlink" title="jekyll安装"></a>jekyll安装</h3><p>这一步总的来说就是执行<code>$ sudo gem install jekyll</code>，但是一般都会有比较多的问题，例如缺少gcc，<br>ruby版本太低等等，具体问题有太多，只能上google搜索下解决方法。</p>
+<h3 id="jekyll包依赖解决"><a href="#jekyll包依赖解决" class="headerlink" title="jekyll包依赖解决"></a>jekyll包依赖解决</h3><p>如果你的jekyll项目是从fork别人的代码，那么一般的都会引用到其他的包，在你启动项目时会报错，因为你还没安装。<br>对应缺少的包，你需要用gem去安装，<code>$ sudo gem install jekyll-sitemap</code>。你可以在项目中的Gemfile查看你引用的包，<br>并主动安装它。</p>
+<h3 id="jekyll服务启动"><a href="#jekyll服务启动" class="headerlink" title="jekyll服务启动"></a>jekyll服务启动</h3><p>cd到对应的项目目录，输入<code>$sudo jekyll serve</code>就可以启动项目了。对于你的代码，只要不改到<strong>_config.yml</strong>配置文件，<br>jekyll会实时编译你的改动，你每改动一次只要即使刷新页面就可以看到了。</p>
+<h3 id="Windows环境怎么办？"><a href="#Windows环境怎么办？" class="headerlink" title="Windows环境怎么办？"></a>Windows环境怎么办？</h3><p>我建议，如果是Windows的话，就别折腾去本地安装jekyll了。因为linux环境都已经够复杂的了。<br>若你还是希望在Windows下安装jekyll，你只能寄于docker或者虚拟机了。否则你还是乖乖的上传代码看效果吧。</p>
+<hr>
+<h2 id="定制自己的项目"><a href="#定制自己的项目" class="headerlink" title="定制自己的项目"></a>定制自己的项目</h2><p>这一节大概粗略介绍以下，如何有技巧的、快速的定制自己的博客。</p>
+<h3 id="了解自己的模板"><a href="#了解自己的模板" class="headerlink" title="了解自己的模板"></a>了解自己的模板</h3><p>一般来说我们的blog都是从网上拿的模板。在拿的时候，不要看完界面好看就fork。</p>
+<ol>
+<li>你要先看看项目的<strong>REAME.md</strong>，看看它说明的功能是否符合你的需求，例如有没有tag统计功能，文章分类功能等。</li>
+<li>看项目的<strong>_config.yml</strong>，这是整个项目的核心。优秀的jekyll项目，都会把功能配置、主要参数写到这个文件内，<br>所以你看这文件，就基本知道有哪些功能，并对应修改它</li>
+</ol>
+<h3 id="修改前端"><a href="#修改前端" class="headerlink" title="修改前端"></a>修改前端</h3><p>很经常你在用一个新的模板时，会觉得某些地方不合适，例如有些facebook、twitter分享按钮不想要，<br>想换成自己的一些联系方式。你会想删除或者调整一些内容，但又不知道去哪里修改这些东西。<br>其实你或许不需要知道太多前端的知识，你只需要对整个项目全局搜索facebook，找出对应位置，在附近添加修改即可。<br>没必要真的完全理解整个项目是如何编译运行的。</p>
+<h2 id="jekyll的深入"><a href="#jekyll的深入" class="headerlink" title="jekyll的深入"></a>jekyll的深入</h2><p>一般jekyll的文件目录结构如下<br><img src="http://oboi2pfvn.bkt.clouddn.com/folder-of-jekyll.png" alt="folder of jekyll"><br>jekyll的启动运行大致如下流程：</p>
+<ol>
+<li>读取<strong>_config.yml</strong>配置，修改到这个文件需要重启jekyll服务</li>
+<li>读取根目录的<strong>index.html</strong>文件，但这文件一般没内容，需要递归读取</li>
+<li>带<strong>_</strong>符号的目录都是最底层的生成文件，是项目启动后不能直接访问的，<br>它们会编译填充进上级的目录文件中，这些目录都是不带<strong>_</strong>符号。</li>
+<li>需要读取一些内容时，这些内容就会执行步骤<strong>3.</strong>，归并到上级可显示等级中呈现出来，<br>而不是一次全加载。</li>
+<li>大多数一个不带<strong>_</strong>符号的文件夹，（除了assets文件夹，存放可以直接访问的图片、css、js等）,<br>是一个页面，然后由<strong>_layouts</strong>里的各个页面文件填充。</li>
+<li><strong>_includes</strong>文件一般是通用组件的页面</li>
+</ol>
+<p>由此可见，一般你需要修改的文件大多是带<strong>_</strong>符号的文件，例如页面的修改，博客的编写等。<br>而修改页面的title则是修改不带<strong>_</strong>符号的文件，因为这是建立页面的基础属性。</p>
+<hr>
+<p><strong>参考 :</strong>  </p>
+<p><a href="https://ruby-china.org/" target="_blank" rel="noopener">https://ruby-china.org/</a>  ruby China主页</p>
+<p><a href="http://jekyllcn.com/" target="_blank" rel="noopener">http://jekyllcn.com/</a>  jekyll中文主页</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>听说你想请我喝下午茶?~</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpeg" alt="Zack Ku 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpeg" alt="Zack Ku 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/blog/" rel="tag"># blog</a>
+          
+            <a href="/tags/jekyll/" rel="tag"># jekyll</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/built-blog-3/" rel="next" title="基于Jekyll和github Pages博客搭建全过程(三)">
+                <i class="fa fa-chevron-left"></i> 基于Jekyll和github Pages博客搭建全过程(三)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/mongo-transaction/" rel="prev" title="Mongodb拥有事务的解决方案（一）">
+                Mongodb拥有事务的解决方案（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar2.jpeg"
+                alt="Zack Ku" />
+            
+              <p class="site-author-name" itemprop="name">Zack Ku</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/zack-ku" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:gza_scnu@163.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://zack-blog.oss-cn-shenzhen.aliyuncs.com/image/blog-common/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png" target="_blank" title="WeChat" rel="external nofollow"><i class="fa fa-fw fa-wechat"></i></a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#本地安装jekyll"><span class="nav-number">1.</span> <span class="nav-text">本地安装jekyll</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ruby安装"><span class="nav-number">1.1.</span> <span class="nav-text">ruby安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rubygems安装"><span class="nav-number">1.2.</span> <span class="nav-text">rubygems安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jekyll安装"><span class="nav-number">1.3.</span> <span class="nav-text">jekyll安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jekyll包依赖解决"><span class="nav-number">1.4.</span> <span class="nav-text">jekyll包依赖解决</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jekyll服务启动"><span class="nav-number">1.5.</span> <span class="nav-text">jekyll服务启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows环境怎么办？"><span class="nav-number">1.6.</span> <span class="nav-text">Windows环境怎么办？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定制自己的项目"><span class="nav-number">2.</span> <span class="nav-text">定制自己的项目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#了解自己的模板"><span class="nav-number">2.1.</span> <span class="nav-text">了解自己的模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改前端"><span class="nav-number">2.2.</span> <span class="nav-text">修改前端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jekyll的深入"><span class="nav-number">3.</span> <span class="nav-text">jekyll的深入</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zack Ku</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.5"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.5"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.5"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.5"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.5"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.1.8/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'sA9qkJThiH0lRmB46cSVdCJ3-gzGzoHsz',
+        appKey: 'eHgeHgsNtk4nHbcGFNcrz1W6',
+        placeholder: '说点什么...',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=6.0.5"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

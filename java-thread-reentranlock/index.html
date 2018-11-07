@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="8df1kGxKl77ts3Y_6huryVjNQJWbf8mTVXeBvHNGtZk" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.5" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-z.png?v=6.0.5">
+
+
+  <link rel="mask-icon" href="/images/safari-pinned-tab-z.svg?v=6.0.5" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.0.5',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: 'USQASS7PS3',
+      apiKey: 'b2fc1956207dad6c82679e86986cfead',
+      indexName: 'blog',
+      hits: {"per_page":3},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="Java,多线程,锁," />
+
+
+<meta name="description" content="上一章《AQS源码阅读》讲了AQS框架，这次讲讲它的应用类（注意不是子类实现，待会细讲）。ReentrantLock，顾名思义重入锁，但什么是重入，这个锁到底是怎样的，我们来看看类的注解说明ReentrantLock与隐式锁synchronized功能相同，但ReentrantLock更具有扩展性。《锁优化》里提到Java在1.6对隐式锁synchronized做了锁的优化，使其性能与显式锁性能相">
+<meta name="keywords" content="Java,多线程,锁">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java多线程——ReentrantLock源码阅读">
+<meta property="og:url" content="http://zackku.com/java-thread-reentranlock/index.html">
+<meta property="og:site_name" content="Zack&#39;s Blog">
+<meta property="og:description" content="上一章《AQS源码阅读》讲了AQS框架，这次讲讲它的应用类（注意不是子类实现，待会细讲）。ReentrantLock，顾名思义重入锁，但什么是重入，这个锁到底是怎样的，我们来看看类的注解说明ReentrantLock与隐式锁synchronized功能相同，但ReentrantLock更具有扩展性。《锁优化》里提到Java在1.6对隐式锁synchronized做了锁的优化，使其性能与显式锁性能相">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/annotion-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/annotion-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/annotion-3.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/lock-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/lock-5.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-4.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-5.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-6.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-7.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/reserverd-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/lock-6.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/lock-7.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://pdufjhqho.bkt.clouddn.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E6%A0%87%E5%87%86%E8%89%B2%E7%89%88.png">
+<meta property="og:updated_time" content="2018-09-07T08:52:29.374Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java多线程——ReentrantLock源码阅读">
+<meta name="twitter:description" content="上一章《AQS源码阅读》讲了AQS框架，这次讲讲它的应用类（注意不是子类实现，待会细讲）。ReentrantLock，顾名思义重入锁，但什么是重入，这个锁到底是怎样的，我们来看看类的注解说明ReentrantLock与隐式锁synchronized功能相同，但ReentrantLock更具有扩展性。《锁优化》里提到Java在1.6对隐式锁synchronized做了锁的优化，使其性能与显式锁性能相">
+<meta name="twitter:image" content="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/annotion-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+
+
+
+
+
+
+  <link rel="canonical" href="http://zackku.com/java-thread-reentranlock/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>Java多线程——ReentrantLock源码阅读 | Zack's Blog</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115388456-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-115388456-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zack's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">这里应该有一句格言，但我们没有写</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-电子书">
+          <a href="/ebooks" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />电子书</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br />公众号：Zack说码</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zackku.com/java-thread-reentranlock/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zack Ku">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar2.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zack's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Java多线程——ReentrantLock源码阅读</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-26T21:37:05+08:00">2018-08-26</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/java-thread-reentranlock/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/java-thread-reentranlock/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上一章<a href="/java-thread-aqs">《AQS源码阅读》</a>讲了AQS框架，这次讲讲它的应用类（注意不是子类实现，待会细讲）。<br>ReentrantLock，顾名思义重入锁，但什么是重入，这个锁到底是怎样的，我们来看看类的注解说明<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/annotion-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>ReentrantLock与隐式锁synchronized功能相同，但ReentrantLock更具有扩展性。<br><a href="/java-thread-lock-base">《锁优化》</a>里提到Java在1.6对隐式锁synchronized做了锁的优化，使其性能与显式锁性能相差无异。所以在两者的选择上，更多的是考虑用法，以及功能上的扩展。<a id="more"></a><br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/annotion-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>ReentrantLock是线程独占的，不能与其他线程共享。所谓的重入，就是当本线程想再次获得锁，不需要重新申请，它本身就已经锁了，即重入该锁。<br>为什么会允许锁重入呢？因为该线程已经拥有锁了，不会受其他线程干扰，那么里面的共享变量就不会因为多线程执行造成线程不安全。相当于代码已经在串行执行了，没必要再申请多余的锁了，而是重入当前的锁。<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/annotion-3.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>ReentrantLock会提供一个公平锁的模式，如果选择这个模式，会尽量使得获取锁是公平的，先来先得，但不一定严格按顺序。<br>如果选择了公平锁，性能上会比不使用（默认）低一些。没有一定保证顺序，同时也降性能，所以如果没有特别的要求，尽量使用默认的非公平锁。<br>现在基于以上的认识，来看看ReentrantLock的基本实现吧。</p>
+<h1 id="ReentrantLock概览"><a href="#ReentrantLock概览" class="headerlink" title="ReentrantLock概览"></a>ReentrantLock概览</h1><p>ReentrantLock是实现Lock接口的。所以主要的方法就是Lock接口定义的方法，包括lock()、tryLock()、unlock()、newCondition()等。<br>lock()与tryLock()的区别就是前者会一直等到直到获取锁，后者则是尝试在当时获取锁，不会重复去申请获取。<br>这个newCondition()感觉比较突兀，看起来完全不了解有什么用，和Lock有什么关系，我们后面再详细了解。<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/lock-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>ReentrantLock里面有一个最核心的成员变量，sync。sync的类型就是内部类Sync。它是AQS的子类，也就是说它就是实现ReentrantLock同步的工具。而FairSync和unFairSync则是Sync的子类，封装了是否公平的功能，用于赋值给sync成员变量。<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/lock-5.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<h1 id="Sync同步器"><a href="#Sync同步器" class="headerlink" title="Sync同步器"></a>Sync同步器</h1><p>Sync是继承上文所介绍的AQS，是ReentrantLock里面的NonfairSync和FairSync的父类。<br>看注解可以知道，Sync用了AQS的state（状态原子值）来标识锁被持有的数量。<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>在AQS中，tryRelease()是没有定义的，所以在Sync中重写了。<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-2.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>先判断下申请解锁的线程是否独占锁的线程，否则抛出异常退出。<br>然计算新的state值，用当前state减去releases值。对于state值和releases值到底是多少，这里可以先留个悬念，但大家可以思考下上面注解的定义也可以大概猜出来。<br>最后判断新state值是否为0，为0则没有线程占用，所以设当前独占线程为空，并且更新state。这里更新state值并不需要用CAS原子操作，因为只有一个线程会占用这个锁，不是这个线程都异常退出了。<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-4.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>AQS中核心的tryAcquire()方法并没有在这里实现，因为子类NonfaiSync和FairSync的实现并不一样。但这里同样需要用到nonfairTryAcquire，所以抽象出来了。但为什么同样需要，暂时不得而知，带着问题后面再看看。<br>先判断当前锁的state是否为0，为0则表示没人获取，然后通过CAS更新为acquires值（依然不知道值是多少），同时更新当前线程为锁的独占线程。<br>如果state不为0，则表示有线程已经占有了。但可能占有的线程是当前线程，那么当前的state会加上acquires值。<br><strong>这里很容易就看出来state就是代表重入的次数！</strong>所以上面的谜题就解开了，releases,aquires都是代表每次申请的值，在ReentrantLock肯定都是1，他们的计算总值就是原子值state。<br>如果state不为0，也不是被当前线程占用，那么返回false获取失败。</p>
+<h2 id="NonfairSync"><a href="#NonfairSync" class="headerlink" title="NonfairSync"></a>NonfairSync</h2><p>没啥特别的，直接调用Sync的方法。也没做修改。<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-5.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<h2 id="FairSync"><a href="#FairSync" class="headerlink" title="FairSync"></a>FairSync</h2><p>公平锁的同步器。只有当递归调用或者没有其他等待者，再或者他自己本身排第一才能获取锁。<br>这话比较绕口，大概意思应该是不停地轮询申请锁，直到自己排到队列的第一才能获取。<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-6.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>乍看一看，这个方法基本和父类Sync的nonfairTryAcquire()一样，唯一不同点就是在没有线程占用的时候（state=0），多了个<code>!hasQueuedPredecessors()</code>前置判断。<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/sync-7.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>这个方法用来判断是否队列为空，或者当前线程是否在队列的最前面。<br>所以公平锁模式下，想要能获取锁，除非自己排在队列的最前面。<br>综上看，FairSync根本没有调用到nonfairTryAcquire()，为何说子类都需要用到呢？继续留着悬念，后面解答。</p>
+<h2 id="ReservedStackAccess"><a href="#ReservedStackAccess" class="headerlink" title="@ReservedStackAccess"></a>@ReservedStackAccess</h2><p>可以看到上面介绍的tryAcquire()和tryRelease()都有@ReservedStackAccess。这个注解到底有什么用？<br>查找了下资料，这个是JEP 270添加的新注解。它会保护被注解的方法，通过添加一些额外的空间，防止在多线程运行的时候出现栈溢出。具体看下图<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/reserverd-1.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<h1 id="lock-、tryLock-成员函数"><a href="#lock-、tryLock-成员函数" class="headerlink" title="lock()、tryLock()成员函数"></a>lock()、tryLock()成员函数</h1><p>ReentrantLock里面的lock()方法是调用成员变量sync的acquire()。<br>无论是否公平锁都是直接调用AQS的acquire()方法，不过就是各自有tryAcuqire()的重写，即上文所说的内容。<br>参数1，是透传给tryAcquire()的，所以这里代表是入锁一次的意思。<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/lock-6.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>而tryLock()调用的是成员变量sync的nonfairTryAcquire()。上文说到Sync内部类抽象了这个方法出来，说到子类都会用到，说的正是tryLock()方法需要用到。<br>所以显而易见的，无论是否公平锁，调用tryLock()都是用的非公平锁的方法。为什么呢？<br>因为tryLock()的try只是尝试，无论是否公平，对于方法来说没有必要，只是尝试申请的时候能否获取锁而已。<br><img src="http://pdufjhqho.bkt.clouddn.com/image/java-thread-reentrantlock/lock-7.png?imageView2/0/q/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>至于其他成员函数，大都是围绕获取线程和队列的状态，没什么特别的，在这里不再赘述，有兴趣的可以看看源码。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>回顾下要点</p>
+<ol>
+<li>ReentrantLock是一个可重入的锁（被当前占用的线程重入）。</li>
+<li>它有两种模式公平与非公平，通过NonfairSync和FairSync赋值sync成员变量实现。</li>
+<li>两种模式都是AQS的子类，通过重写tryAcquire()区别不同。公平锁多了是否在队列的头的判断。</li>
+<li>tryLock()方法没有区分模式，都是一样的。</li>
+</ol>
+<p>上文提到的newCondition()还没有涉及到，等后续再起一章节说下这个Condition。</p>
+<p>如果觉得还不错，请关注公众号：Zack说码<br><img src="http://pdufjhqho.bkt.clouddn.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E6%A0%87%E5%87%86%E8%89%B2%E7%89%88.png" alt=""></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>听说你想请我喝下午茶?~</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpeg" alt="Zack Ku 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpeg" alt="Zack Ku 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+            <a href="/tags/锁/" rel="tag"># 锁</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/java-thread-aqs/" rel="next" title="Java多线程——AQS框架源码阅读">
+                <i class="fa fa-chevron-left"></i> Java多线程——AQS框架源码阅读
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/java-thread-reentranreedwritelock/" rel="prev" title="Java多线程——ReentrantReadWriteLock源码阅读">
+                Java多线程——ReentrantReadWriteLock源码阅读 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar2.jpeg"
+                alt="Zack Ku" />
+            
+              <p class="site-author-name" itemprop="name">Zack Ku</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">30</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">33</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/zack-ku" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:gza_scnu@163.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://pdufjhqho.bkt.clouddn.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E6%A0%87%E5%87%86%E8%89%B2%E7%89%88.png" target="_blank" title="WeChat" rel="external nofollow"><i class="fa fa-fw fa-wechat"></i></a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ReentrantLock概览"><span class="nav-number">1.</span> <span class="nav-text">ReentrantLock概览</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Sync同步器"><span class="nav-number">2.</span> <span class="nav-text">Sync同步器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NonfairSync"><span class="nav-number">2.1.</span> <span class="nav-text">NonfairSync</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FairSync"><span class="nav-number">2.2.</span> <span class="nav-text">FairSync</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ReservedStackAccess"><span class="nav-number">2.3.</span> <span class="nav-text">@ReservedStackAccess</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lock-、tryLock-成员函数"><span class="nav-number">3.</span> <span class="nav-text">lock()、tryLock()成员函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zack Ku</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.5"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.5"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.5"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.5"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.5"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.1.8/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'sA9qkJThiH0lRmB46cSVdCJ3-gzGzoHsz',
+        appKey: 'eHgeHgsNtk4nHbcGFNcrz1W6',
+        placeholder: '说点什么...',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=6.0.5"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
