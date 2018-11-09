@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>http://zackku.com/redis-cluster/</loc>
+    <lastmod>2018-11-09T03:32:06.791Z</lastmod>
+    <data>
+        <display>
+        <title>进阶的Redis之哈希分片原理与集群实战</title>
+        <pubTime>2018-11-09T03:32:06.000Z</pubTime>
+        
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="Redis进阶" url="http://zackku.com/categories/Redis%E8%BF%9B%E9%98%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://zackku.com/redis-rdb-aof/</loc>
     <lastmod>2018-11-08T02:34:02.952Z</lastmod>
     <data>
