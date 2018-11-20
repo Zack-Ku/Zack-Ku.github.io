@@ -109,13 +109,13 @@
   <meta name="keywords" content="Redis," />
 
 
-<meta name="description" content="之前介绍了《进阶的Redis之数据持久化RDB与AOF》和《进阶的Redis之Sentinel原理及实战》，这次来了解下Redis的集群分片功能，以及其中。 集群分片模式如果Redis只用复制功能做主从，那么当数据量巨大的情况下，单机情况下可能已经承受不下一份数据，更不用说是主从都要各自保存一份完整的数据。在这种情况下，数据分片是一个非常好的解决办法。 Redis的Cluster正是用于解决该问">
+<meta name="description" content="前面介绍了《进阶的Redis之数据持久化RDB与AOF》和《进阶的Redis之Sentinel原理及实战》，这次来了解下Redis的集群功能，以及其中哈希分片原理。 集群分片模式如果Redis只用复制功能做主从，那么当数据量巨大的情况下，单机情况下可能已经承受不下一份数据，更不用说是主从都要各自保存一份完整的数据。在这种情况下，数据分片是一个非常好的解决办法。 Redis的Cluster正是用于">
 <meta name="keywords" content="Redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="进阶的Redis之哈希分片原理与集群实战">
 <meta property="og:url" content="http://zackku.com/redis-cluster/index.html">
 <meta property="og:site_name" content="Zack&#39;s Blog">
-<meta property="og:description" content="之前介绍了《进阶的Redis之数据持久化RDB与AOF》和《进阶的Redis之Sentinel原理及实战》，这次来了解下Redis的集群分片功能，以及其中。 集群分片模式如果Redis只用复制功能做主从，那么当数据量巨大的情况下，单机情况下可能已经承受不下一份数据，更不用说是主从都要各自保存一份完整的数据。在这种情况下，数据分片是一个非常好的解决办法。 Redis的Cluster正是用于解决该问">
+<meta property="og:description" content="前面介绍了《进阶的Redis之数据持久化RDB与AOF》和《进阶的Redis之Sentinel原理及实战》，这次来了解下Redis的集群功能，以及其中哈希分片原理。 集群分片模式如果Redis只用复制功能做主从，那么当数据量巨大的情况下，单机情况下可能已经承受不下一份数据，更不用说是主从都要各自保存一份完整的数据。在这种情况下，数据分片是一个非常好的解决办法。 Redis的Cluster正是用于">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-cluster/hash-1?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-cluster/hash-2?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
@@ -131,10 +131,10 @@
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-cluster/info-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-cluster/get-set.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
-<meta property="og:updated_time" content="2018-11-09T03:45:32.442Z">
+<meta property="og:updated_time" content="2018-11-09T08:11:19.242Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="进阶的Redis之哈希分片原理与集群实战">
-<meta name="twitter:description" content="之前介绍了《进阶的Redis之数据持久化RDB与AOF》和《进阶的Redis之Sentinel原理及实战》，这次来了解下Redis的集群分片功能，以及其中。 集群分片模式如果Redis只用复制功能做主从，那么当数据量巨大的情况下，单机情况下可能已经承受不下一份数据，更不用说是主从都要各自保存一份完整的数据。在这种情况下，数据分片是一个非常好的解决办法。 Redis的Cluster正是用于解决该问">
+<meta name="twitter:description" content="前面介绍了《进阶的Redis之数据持久化RDB与AOF》和《进阶的Redis之Sentinel原理及实战》，这次来了解下Redis的集群功能，以及其中哈希分片原理。 集群分片模式如果Redis只用复制功能做主从，那么当数据量巨大的情况下，单机情况下可能已经承受不下一份数据，更不用说是主从都要各自保存一份完整的数据。在这种情况下，数据分片是一个非常好的解决办法。 Redis的Cluster正是用于">
 <meta name="twitter:image" content="http://qiniu.zackku.com/image/redis-cluster/hash-1?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 
 
@@ -451,7 +451,7 @@
       
 
       
-        <p>之前介绍了<a href="/redis-rdb-aof">《进阶的Redis之数据持久化RDB与AOF》</a>和<a href="/redis-sentinel">《进阶的Redis之Sentinel原理及实战》</a>，这次来了解下Redis的集群分片功能，以及其中。</p>
+        <p>前面介绍了<a href="/redis-rdb-aof">《进阶的Redis之数据持久化RDB与AOF》</a>和<a href="/redis-sentinel">《进阶的Redis之Sentinel原理及实战》</a>，这次来了解下Redis的集群功能，以及其中哈希分片原理。</p>
 <h1 id="集群分片模式"><a href="#集群分片模式" class="headerlink" title="集群分片模式"></a>集群分片模式</h1><p>如果Redis只用复制功能做主从，那么当数据量巨大的情况下，单机情况下可能已经承受不下一份数据，更不用说是主从都要各自保存一份完整的数据。在这种情况下，数据分片是一个非常好的解决办法。</p>
 <p>Redis的Cluster正是用于解决该问题。它主要提供两个功能：</p>
 <ol>
@@ -490,7 +490,7 @@
 <h2 id="槽位分配"><a href="#槽位分配" class="headerlink" title="槽位分配"></a>槽位分配</h2><p>通过<code>cluster info</code>命令查看集群的状态<br><img src="http://qiniu.zackku.com/image/redis-cluster/cluster-info.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>state的状态是fail的，还没启用。看下官方的说明<br><img src="http://qiniu.zackku.com/image/redis-cluster/slot-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>只有state为ok，节点才能接受请求。如果只要有一个槽位（slot）没有分配，那么这个状态就是fail。而一共需要分配16384槽位才能让集群正常工作。</p>
 <p>接下来给6379分配0~5000的槽位，给6380分配5001~10000的槽位，给6381分配10001~16383的槽位。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; redis-cli -c -p 6379 cluster addslots &#123;0..5000&#125;</span><br><span class="line">&gt; redis-cli -c -p 6380 cluster addslots &#123;5001..10000&#125;</span><br><span class="line">&gt; redis-cli -c -p 6381 cluster addslots &#123;10001..16383&#125;</span><br></pre></td></tr></table></figure></p>
 <p>再看看<code>cluster info</code><br><img src="http://qiniu.zackku.com/image/redis-cluster/info-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>state已经为ok，16384个槽位都已经分配好了。现在集群已经可以正常工作了。</p>
-<h2 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h2><p>随便登上一个实例，记得加上参数<code>-c</code>，启用集群模式的客户端，否则无法正常运行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -c -p 6380</span><br></pre></td></tr></table></figure></p>
+<h2 id="效果测试"><a href="#效果测试" class="headerlink" title="效果测试"></a>效果测试</h2><p>随便登上一个实例，记得加上参数<code>-c</code>，启用集群模式的客户端，否则无法正常运行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -c -p 6380</span><br></pre></td></tr></table></figure></p>
 <p>尝试下set、get操作<br><img src="http://qiniu.zackku.com/image/redis-cluster/get-set.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>可以看到，Redis集群会计算key落在哪个卡槽，然后会把命令转发到负责该卡槽的节点上执行。</p>
 <p>利用<code>cluster keyslot</code>命令计算出key是在哪个槽位上，从而得出会跳转到哪个节点上执行。</p>
 <hr>
@@ -785,6 +785,8 @@
                     
                       
                     
+                      
+                    
                     <span class="site-state-item-count">36</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
@@ -828,6 +830,20 @@
 
           
           
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luhuancheng.com/" title="luhuancheng" target="_blank">luhuancheng</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
 
           
             
@@ -847,7 +863,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#集群分片模式"><span class="nav-number">1.</span> <span class="nav-text">集群分片模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简单哈希算法"><span class="nav-number">1.1.</span> <span class="nav-text">简单哈希算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一致性哈希算法"><span class="nav-number">1.2.</span> <span class="nav-text">一致性哈希算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#哈希槽"><span class="nav-number">1.3.</span> <span class="nav-text">哈希槽</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群搭建"><span class="nav-number">2.</span> <span class="nav-text">集群搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#redis-conf配置"><span class="nav-number">2.1.</span> <span class="nav-text">redis.conf配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群关联"><span class="nav-number">2.2.</span> <span class="nav-text">集群关联</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#槽位分配"><span class="nav-number">2.3.</span> <span class="nav-text">槽位分配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试结果"><span class="nav-number">2.4.</span> <span class="nav-text">测试结果</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#集群分片模式"><span class="nav-number">1.</span> <span class="nav-text">集群分片模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简单哈希算法"><span class="nav-number">1.1.</span> <span class="nav-text">简单哈希算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一致性哈希算法"><span class="nav-number">1.2.</span> <span class="nav-text">一致性哈希算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#哈希槽"><span class="nav-number">1.3.</span> <span class="nav-text">哈希槽</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群搭建"><span class="nav-number">2.</span> <span class="nav-text">集群搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#redis-conf配置"><span class="nav-number">2.1.</span> <span class="nav-text">redis.conf配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群关联"><span class="nav-number">2.2.</span> <span class="nav-text">集群关联</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#槽位分配"><span class="nav-number">2.3.</span> <span class="nav-text">槽位分配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果测试"><span class="nav-number">2.4.</span> <span class="nav-text">效果测试</span></a></li></ol></li></ol></div>
             
 
           </div>

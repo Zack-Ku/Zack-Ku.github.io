@@ -106,18 +106,18 @@
 
 
   
-  <meta name="keywords" content="Java,多线程,锁," />
+  <meta name="keywords" content="多线程,Java,锁," />
 
 
 <meta name="description" content="为了性能与使用的场景，Java实现锁的方式有非常多。而关于锁主要的实现包含synchronized关键字、AQS框架下的锁，其中的实现都离不开以下的策略。 悲观锁与乐观锁 乐观锁。乐观的想法，认为并发读多写少。每次操作的时候都不上锁，直到更新的时候才通过CAS判断更新。对于AQS框架下的锁，初始就是乐观锁，若CAS失败则转化为悲观锁。 悲观锁。悲观的想法，认为并发写多读少。每次操作数据都上锁，即使">
-<meta name="keywords" content="Java,多线程,锁">
+<meta name="keywords" content="多线程,Java,锁">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java多线程——锁概念与锁优化">
 <meta property="og:url" content="http://zackku.com/java-thread-lock-base/index.html">
 <meta property="og:site_name" content="Zack&#39;s Blog">
 <meta property="og:description" content="为了性能与使用的场景，Java实现锁的方式有非常多。而关于锁主要的实现包含synchronized关键字、AQS框架下的锁，其中的实现都离不开以下的策略。 悲观锁与乐观锁 乐观锁。乐观的想法，认为并发读多写少。每次操作的时候都不上锁，直到更新的时候才通过CAS判断更新。对于AQS框架下的锁，初始就是乐观锁，若CAS失败则转化为悲观锁。 悲观锁。悲观的想法，认为并发写多读少。每次操作数据都上锁，即使">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-29T02:32:56.695Z">
+<meta property="og:updated_time" content="2018-11-19T02:26:04.741Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java多线程——锁概念与锁优化">
 <meta name="twitter:description" content="为了性能与使用的场景，Java实现锁的方式有非常多。而关于锁主要的实现包含synchronized关键字、AQS框架下的锁，其中的实现都离不开以下的策略。 悲观锁与乐观锁 乐观锁。乐观的想法，认为并发读多写少。每次操作的时候都不上锁，直到更新的时候才通过CAS判断更新。对于AQS框架下的锁，初始就是乐观锁，若CAS失败则转化为悲观锁。 悲观锁。悲观的想法，认为并发写多读少。每次操作数据都上锁，即使">
@@ -446,6 +446,8 @@
 <h2 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h2><p>由于在没有很多线程竞争的前提下，重量级锁会导致性能资源的浪费。每次判断是否无锁，无锁则建锁记录，有锁通过CAS去尝试获取锁（对比Mark Word）。该过程失败会让锁膨胀为重量级锁。</p>
 <h2 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h2><p>是轻量级锁的优化，适用于无多线程竞争。虽然轻量级锁在可以在较少线程竞争下，减少操作系统调用，减少互斥变量的产生。但在理想情况下，线程很少发生线程竞争，在轻量级锁中，还是会有比较多的CAS操作。在偏向锁中，有一个锁记录（Mark word）标记为偏向，指向当前线程。若该指向不变，则只需要判断记录是否有被切换。如果被切换了，尝试CAS替换指向，后续一直执行同步代码块。当CAS替换指向失败，则说明存在多线程竞争，此时锁会膨胀为轻量级锁。</p>
 <h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p>是锁竞争失败后执行的策略之一，对应的有阻塞的锁。在线程竞争锁失败后，阻塞的锁会把线程阻塞，直到有信号唤起才能继续执行线程，此过程会涉及用户态与系统态的转换，产生性能消耗。而自旋锁在锁竞争失败后，会把线程做自旋，避免线程进入阻塞。在自旋过程中，会不断的尝试去竞争锁。<br>但如果线程一直自旋都获取不到锁，也会产生很多CPU的性能消耗，所以也有一个<strong>自适应的自旋锁</strong>（控制自旋的时间）解决这个问题。</p>
+<hr>
+<p>更多技术文章、精彩干货，请关注<br>博客：zackku.com<br>微信公众号：Zack说码<br>![](<a href="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png" target="_blank" rel="noopener">http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png</a></p>
 
       
     </div>
@@ -495,9 +497,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Java/" rel="tag"># Java</a>
-          
             <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
           
             <a href="/tags/锁/" rel="tag"># 锁</a>
           
@@ -744,6 +746,8 @@
                     
                       
                     
+                      
+                    
                     <span class="site-state-item-count">36</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
@@ -786,6 +790,20 @@
           
 
           
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luhuancheng.com/" title="luhuancheng" target="_blank">luhuancheng</a>
+                  </li>
+                
+              </ul>
+            </div>
           
 
           

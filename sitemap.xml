@@ -2,9 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://zackku.com/write-plan/index.html</loc>
+    
+    <lastmod>2018-11-19T06:25:35.130Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zackku.com/java-thread-lock-base/</loc>
+    
+    <lastmod>2018-11-19T02:26:04.741Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zackku.com/cap/</loc>
+    
+    <lastmod>2018-11-19T01:59:30.814Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://zackku.com/redis-cluster/</loc>
     
-    <lastmod>2018-11-09T03:45:32.442Z</lastmod>
+    <lastmod>2018-11-09T08:11:19.242Z</lastmod>
     
   </url>
   
@@ -16,23 +37,9 @@
   </url>
   
   <url>
-    <loc>http://zackku.com/cap/</loc>
-    
-    <lastmod>2018-11-07T11:12:23.511Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://zackku.com/redis-sentinel/</loc>
     
     <lastmod>2018-10-22T11:49:30.639Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zackku.com/write-plan/index.html</loc>
-    
-    <lastmod>2018-10-22T02:11:53.608Z</lastmod>
     
   </url>
   
@@ -250,13 +257,6 @@
     <loc>http://zackku.com/db-defined-bug/</loc>
     
     <lastmod>2018-09-29T02:35:17.257Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zackku.com/java-thread-lock-base/</loc>
-    
-    <lastmod>2018-09-29T02:32:56.695Z</lastmod>
     
   </url>
   
