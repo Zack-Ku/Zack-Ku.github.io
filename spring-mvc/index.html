@@ -109,13 +109,13 @@
   <meta name="keywords" content="Spring,MVC," />
 
 
-<meta name="description" content="之前已经分析过了Spring的IOC(《零基础带你看Spring源码——IOC控制反转》)与AOP(《从源码入手，一文带你读懂Spring AOP面向切面编程》)的源码，本次就来分析下SpringMVC的源码。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。 到底什么是Spring MVC，我们还在用吗？Sprin">
+<meta name="description" content="之前已经分析过了Spring的IOC(《零基础带你看Spring源码——IOC控制反转》)与AOP(《从源码入手，一文带你读懂Spring AOP面向切面编程》)的源码，本次就来分析下SpringMVC。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。 到底什么是Spring MVC，我们还在用吗？Spring M">
 <meta name="keywords" content="Spring,MVC">
 <meta property="og:type" content="article">
 <meta property="og:title" content="“过时”的SpringMVC我们到底在用什么？深入分析DispatchServlet源码">
 <meta property="og:url" content="http://zackku.com/spring-mvc/index.html">
 <meta property="og:site_name" content="Zack&#39;s Blog">
-<meta property="og:description" content="之前已经分析过了Spring的IOC(《零基础带你看Spring源码——IOC控制反转》)与AOP(《从源码入手，一文带你读懂Spring AOP面向切面编程》)的源码，本次就来分析下SpringMVC的源码。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。 到底什么是Spring MVC，我们还在用吗？Sprin">
+<meta property="og:description" content="之前已经分析过了Spring的IOC(《零基础带你看Spring源码——IOC控制反转》)与AOP(《从源码入手，一文带你读懂Spring AOP面向切面编程》)的源码，本次就来分析下SpringMVC。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。 到底什么是Spring MVC，我们还在用吗？Spring M">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/mvc-rest.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/starter.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
@@ -132,16 +132,15 @@
 <meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/initHandlerMapping.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/getHandlerAdapter.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/supports.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
-<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/ha-handle.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ
-==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/ha-handle.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/handlemethod.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/interceptors.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/pre-post-handle.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
-<meta property="og:updated_time" content="2018-11-21T09:54:27.165Z">
+<meta property="og:updated_time" content="2018-11-21T11:41:48.763Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="“过时”的SpringMVC我们到底在用什么？深入分析DispatchServlet源码">
-<meta name="twitter:description" content="之前已经分析过了Spring的IOC(《零基础带你看Spring源码——IOC控制反转》)与AOP(《从源码入手，一文带你读懂Spring AOP面向切面编程》)的源码，本次就来分析下SpringMVC的源码。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。 到底什么是Spring MVC，我们还在用吗？Sprin">
+<meta name="twitter:description" content="之前已经分析过了Spring的IOC(《零基础带你看Spring源码——IOC控制反转》)与AOP(《从源码入手，一文带你读懂Spring AOP面向切面编程》)的源码，本次就来分析下SpringMVC。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。 到底什么是Spring MVC，我们还在用吗？Spring M">
 <meta name="twitter:image" content="http://qiniu.zackku.com/image/java-spring-mvc/mvc-rest.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 
 
@@ -458,7 +457,7 @@
       
 
       
-        <p>之前已经分析过了Spring的IOC(<a href="/spring-ioc">《零基础带你看Spring源码——IOC控制反转》</a>)与AOP(<a href="/spring-aop">《从源码入手，一文带你读懂Spring AOP面向切面编程》</a>)的源码，本次就来分析下SpringMVC的源码。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。</p>
+        <p>之前已经分析过了Spring的IOC(<a href="/spring-ioc">《零基础带你看Spring源码——IOC控制反转》</a>)与AOP(<a href="/spring-aop">《从源码入手，一文带你读懂Spring AOP面向切面编程》</a>)的源码，本次就来分析下SpringMVC。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。</p>
 <h1 id="到底什么是Spring-MVC，我们还在用吗？"><a href="#到底什么是Spring-MVC，我们还在用吗？" class="headerlink" title="到底什么是Spring MVC，我们还在用吗？"></a>到底什么是Spring MVC，我们还在用吗？</h1><p><strong>Spring MVC</strong>，官方名字其实是<strong>Spring Web MVC</strong>，Maven上的包名也是spring-webmvc。从Spring诞生以来，它就是一款基于Servlet Api的web架构。值得一提的是，在Spring5的时候，出了一款新的Web架构，Flux，是基于事件驱动模型（类似nodejs）做的。以后会写一篇来专门介绍一下Flux，敬请关注。</p>
 <p>MVC，可以说是“上个世纪”最流行的前后端交互模型。它包含Model（业务模型）、View（用户视图）、Controller（控制器），把各部分分开组织，对代码抽象与隔离的处理可谓是代码设计的典范。</p>
 <p>不过自从15年开始，随着各种前端框架的崛起，使得前端后端的关系发生进一步的演变，从MVC架构演变成前后端分离的REST架构了。以前MVC架构每次请求都需要经过控制器-&gt;模型-&gt;视图的流程，演变成前端请求后端接口，返回JSON的这样一种REST架构。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/mvc-rest.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br><a id="more"></a><br>问题来了，我们到底还在用SpringMVC吗？答案是，不全用。前后端做了代码以及部署的分离，也就是说后端并不感知前端的存在，所以对于后端而言，View（用户视图）也就无从可谈了。Model（业务模型）发送性质上的改变，以前是一个前端所需要的Model，给页面读取，现在是一个JSON格式给到前端，由前端自由处理。</p>
@@ -496,8 +495,7 @@
 <h2 id="getHandlerAdapter"><a href="#getHandlerAdapter" class="headerlink" title="getHandlerAdapter()"></a>getHandlerAdapter()</h2><p>在取出实际处理的<strong>Handler</strong>后，就需要用它找出support它的适配器（<strong>HandlerAdapter</strong>）。按照前面对<strong>HandlerAdapter</strong>的描述，对于Demo而言，support这个<strong>Handler</strong>必定是<strong>RequestMappingHandlerAdapter</strong>。</p>
 <p>这个逻辑也非常简单，同样是遍历已初始化的<strong>handlerAdapters</strong>（初始化的过程类似<strong>handlerMappings</strong>），然后对于具体每个<strong>handlerAdapter</strong>，调用其<strong>support()</strong>方法，看是否支持。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/getHandlerAdapter.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
 <p><strong>supports()</strong>方法也很简单，就用instanceof判断handler是否Adapter自己支持的类。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/supports.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
-<h2 id="HandlerAdapter-handle"><a href="#HandlerAdapter-handle" class="headerlink" title="HandlerAdapter.handle()"></a>HandlerAdapter.handle()</h2><p>在获取完<strong>Handler</strong>和<strong>HandlerAdapter</strong>后，就可以执行<strong>HandlerAdapter</strong>中的handle方法，其实际只是调用Handler的方法。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/ha-handle.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ
-==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<h2 id="HandlerAdapter-handle"><a href="#HandlerAdapter-handle" class="headerlink" title="HandlerAdapter.handle()"></a>HandlerAdapter.handle()</h2><p>在获取完<strong>Handler</strong>和<strong>HandlerAdapter</strong>后，就可以执行<strong>HandlerAdapter</strong>中的handle方法，其实际只是调用Handler的方法。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/ha-handle.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
 <p>我们按Demo例子，看下<strong>HttpRequestHandlerAdapter</strong>的<strong>handle()</strong>方法实现。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/handlemethod.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>这个方法里面就是用HttpServlet的Request和Reponse去调用我们自己写的controller里面的方法。需要注意的是，这个方法返回的是<strong>ModelAndView</strong>，但我们目前基于Rest架构是已经不用的了，所以方法返回<strong>null</strong>回去了。</p>
 <h2 id="Handler的前置后置处理"><a href="#Handler的前置后置处理" class="headerlink" title="Handler的前置后置处理"></a>Handler的前置后置处理</h2><p>前面提到<strong>Handler</strong>是被封装在<strong>HandlerExecutionChain</strong>里面的，其中还包含一些前置后置的拦截器。所以在执行<strong>HandlerAdapter.handle()</strong>前后会有对<strong>HandlerExecutionChain</strong>的调用，执行<strong>interceptor</strong>对前后置处理的方法<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/interceptors.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
 <p>具体里面的实现就是执行<strong>interceptor</strong>的<strong>preHandle()</strong>和<strong>postHandle()</strong>方法。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/pre-post-handle.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>

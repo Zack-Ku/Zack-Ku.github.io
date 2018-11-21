@@ -5,7 +5,7 @@
     
   <url>
     <loc>http://zackku.com/spring-mvc/</loc>
-    <lastmod>2018-11-21T09:54:27.165Z</lastmod>
+    <lastmod>2018-11-21T11:41:48.763Z</lastmod>
     <data>
         <display>
         <title>“过时”的SpringMVC我们到底在用什么？深入分析DispatchServlet源码</title>
@@ -429,9 +429,9 @@
         <title>Spring AOP Transactional注解不能用于内部调用问题</title>
         <pubTime>2018-05-25T08:18:53.000Z</pubTime>
         
-        <tag>bug</tag>
-         
         <tag>Spring</tag>
+         
+        <tag>bug</tag>
          
         <tag>transaction</tag>
          
@@ -453,9 +453,9 @@
         <title>Spring中Interface与对应Impl Bean扫描冲突问题</title>
         <pubTime>2018-05-22T08:16:03.000Z</pubTime>
         
-        <tag>bug</tag>
-         
         <tag>Spring</tag>
+         
+        <tag>bug</tag>
          
          
            

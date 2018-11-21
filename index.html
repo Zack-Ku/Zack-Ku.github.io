@@ -435,7 +435,7 @@
 
       
         
-          <p>之前已经分析过了Spring的IOC(<a href="/spring-ioc">《零基础带你看Spring源码——IOC控制反转》</a>)与AOP(<a href="/spring-aop">《从源码入手，一文带你读懂Spring AOP面向切面编程》</a>)的源码，本次就来分析下SpringMVC的源码。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。</p>
+          <p>之前已经分析过了Spring的IOC(<a href="/spring-ioc">《零基础带你看Spring源码——IOC控制反转》</a>)与AOP(<a href="/spring-aop">《从源码入手，一文带你读懂Spring AOP面向切面编程》</a>)的源码，本次就来分析下SpringMVC。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。</p>
 <h1 id="到底什么是Spring-MVC，我们还在用吗？"><a href="#到底什么是Spring-MVC，我们还在用吗？" class="headerlink" title="到底什么是Spring MVC，我们还在用吗？"></a>到底什么是Spring MVC，我们还在用吗？</h1><p><strong>Spring MVC</strong>，官方名字其实是<strong>Spring Web MVC</strong>，Maven上的包名也是spring-webmvc。从Spring诞生以来，它就是一款基于Servlet Api的web架构。值得一提的是，在Spring5的时候，出了一款新的Web架构，Flux，是基于事件驱动模型（类似nodejs）做的。以后会写一篇来专门介绍一下Flux，敬请关注。</p>
 <p>MVC，可以说是“上个世纪”最流行的前后端交互模型。它包含Model（业务模型）、View（用户视图）、Controller（控制器），把各部分分开组织，对代码抽象与隔离的处理可谓是代码设计的典范。</p>
 <p>不过自从15年开始，随着各种前端框架的崛起，使得前端后端的关系发生进一步的演变，从MVC架构演变成前后端分离的REST架构了。以前MVC架构每次请求都需要经过控制器-&gt;模型-&gt;视图的流程，演变成前端请求后端接口，返回JSON的这样一种REST架构。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/mvc-rest.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>
