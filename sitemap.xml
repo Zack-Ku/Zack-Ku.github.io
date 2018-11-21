@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://zackku.com/spring-mvc/</loc>
+    
+    <lastmod>2018-11-21T09:54:27.165Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://zackku.com/write-plan/index.html</loc>
     
     <lastmod>2018-11-21T07:09:10.324Z</lastmod>

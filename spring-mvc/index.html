@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="8df1kGxKl77ts3Y_6huryVjNQJWbf8mTVXeBvHNGtZk" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.5" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-z.png?v=6.0.5">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-z.png?v=6.0.5">
+
+
+  <link rel="mask-icon" href="/images/safari-pinned-tab-z.svg?v=6.0.5" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.0.5',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: 'USQASS7PS3',
+      apiKey: 'b2fc1956207dad6c82679e86986cfead',
+      indexName: 'blog',
+      hits: {"per_page":3},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="Spring,MVC," />
+
+
+<meta name="description" content="之前已经分析过了Spring的IOC(《零基础带你看Spring源码——IOC控制反转》)与AOP(《从源码入手，一文带你读懂Spring AOP面向切面编程》)的源码，本次就来分析下SpringMVC的源码。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。 到底什么是Spring MVC，我们还在用吗？Sprin">
+<meta name="keywords" content="Spring,MVC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="“过时”的SpringMVC我们到底在用什么？深入分析DispatchServlet源码">
+<meta property="og:url" content="http://zackku.com/spring-mvc/index.html">
+<meta property="og:site_name" content="Zack&#39;s Blog">
+<meta property="og:description" content="之前已经分析过了Spring的IOC(《零基础带你看Spring源码——IOC控制反转》)与AOP(《从源码入手，一文带你读懂Spring AOP面向切面编程》)的源码，本次就来分析下SpringMVC的源码。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。 到底什么是Spring MVC，我们还在用吗？Sprin">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/mvc-rest.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/starter.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/appliaction.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/controller.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/test-demo.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/dispatcher-annotion.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/handlerAdapter.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/handler.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/methods.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/getHandler.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/HandlerExecutionChain.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/handlerMapping-explanation.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/initHandlerMapping.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/getHandlerAdapter.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/supports.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/ha-handle.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ
+==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/handlemethod.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/interceptors.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/java-spring-mvc/pre-post-handle.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
+<meta property="og:updated_time" content="2018-11-21T09:54:27.165Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="“过时”的SpringMVC我们到底在用什么？深入分析DispatchServlet源码">
+<meta name="twitter:description" content="之前已经分析过了Spring的IOC(《零基础带你看Spring源码——IOC控制反转》)与AOP(《从源码入手，一文带你读懂Spring AOP面向切面编程》)的源码，本次就来分析下SpringMVC的源码。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。 到底什么是Spring MVC，我们还在用吗？Sprin">
+<meta name="twitter:image" content="http://qiniu.zackku.com/image/java-spring-mvc/mvc-rest.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+
+
+
+  <link rel="alternate" href="/rss2.xml" title="Zack's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://zackku.com/spring-mvc/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>“过时”的SpringMVC我们到底在用什么？深入分析DispatchServlet源码 | Zack's Blog</title>
+  
+
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?877c602c29f8404e400126d43bc86593";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zack's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">这里应该有一句格言，但我们没有写</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-电子书">
+          <a href="/ebooks" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />电子书</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br />公众号：Zack说码</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zackku.com/spring-mvc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zack Ku">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar2.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zack's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">“过时”的SpringMVC我们到底在用什么？深入分析DispatchServlet源码</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-21T17:54:27+08:00">2018-11-21</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Spring分析学习/" itemprop="url" rel="index"><span itemprop="name">Spring分析学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/spring-mvc/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/spring-mvc/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前已经分析过了Spring的IOC(<a href="/spring-ioc">《零基础带你看Spring源码——IOC控制反转》</a>)与AOP(<a href="/spring-aop">《从源码入手，一文带你读懂Spring AOP面向切面编程》</a>)的源码，本次就来分析下SpringMVC的源码。本文先简述下目前SpringMVC的使用情况，然后通过Demo的简单让大家有一个初步的使用印象，然后带着印象去看其中执行的分发源码。</p>
+<h1 id="到底什么是Spring-MVC，我们还在用吗？"><a href="#到底什么是Spring-MVC，我们还在用吗？" class="headerlink" title="到底什么是Spring MVC，我们还在用吗？"></a>到底什么是Spring MVC，我们还在用吗？</h1><p><strong>Spring MVC</strong>，官方名字其实是<strong>Spring Web MVC</strong>，Maven上的包名也是spring-webmvc。从Spring诞生以来，它就是一款基于Servlet Api的web架构。值得一提的是，在Spring5的时候，出了一款新的Web架构，Flux，是基于事件驱动模型（类似nodejs）做的。以后会写一篇来专门介绍一下Flux，敬请关注。</p>
+<p>MVC，可以说是“上个世纪”最流行的前后端交互模型。它包含Model（业务模型）、View（用户视图）、Controller（控制器），把各部分分开组织，对代码抽象与隔离的处理可谓是代码设计的典范。</p>
+<p>不过自从15年开始，随着各种前端框架的崛起，使得前端后端的关系发生进一步的演变，从MVC架构演变成前后端分离的REST架构了。以前MVC架构每次请求都需要经过控制器-&gt;模型-&gt;视图的流程，演变成前端请求后端接口，返回JSON的这样一种REST架构。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/mvc-rest.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br><a id="more"></a><br>问题来了，我们到底还在用SpringMVC吗？答案是，不全用。前后端做了代码以及部署的分离，也就是说后端并不感知前端的存在，所以对于后端而言，View（用户视图）也就无从可谈了。Model（业务模型）发送性质上的改变，以前是一个前端所需要的Model，给页面读取，现在是一个JSON格式给到前端，由前端自由处理。</p>
+<p>而作为Web框架的核心，Controller（控制器）则是依然留存的。所以现在大家用SpringMVC用的更多是Controller这一层。当然SpringMVC还有其他组件，包括filter、Http Caching、Web Security等等。本文只是着重MVC架构中的Controller的功能，而Controller的核心组件则是DispatcherServlet。所以后面我们将通过Demo，来逐步深入了解下，DispatcherSevlet如何做到对请求控制分发的。</p>
+<h1 id="传统SpringMVC启动简述"><a href="#传统SpringMVC启动简述" class="headerlink" title="传统SpringMVC启动简述"></a>传统SpringMVC启动简述</h1><p>在传统的SpringMVC中，需要配置web.xml和applicationContext.xml。前者是负责配置项目初始化的配置，如servlet、welcome页面等，是JavaEE的规范。后者是初始化Spring Context的配置，主要是Bean的配置。</p>
+<p>前文说到，SpringMVC是基于Servlet的架构，而DispatcherServlet则是SpringMVC拦截处理所有请求的Servlet，所以web.xml需要配置DispatcherServlet。其他的还有contextLoaderListener，负责加载除DispatcherServlet外的所有context内容，另外还需要通过contextConfigLoader指定Spring的配置文件（如applicationContext.xml）。</p>
+<p>那么在项目启动的时候，加载web.xml首先会执行contextLoaderListener，让它初始化好Spring的Application context。后面有HTTP请求进来，则会落到DispatcherServlet上，让它去做处理分发。</p>
+<h1 id="SpringBoot-Web-Demo搭建"><a href="#SpringBoot-Web-Demo搭建" class="headerlink" title="SpringBoot Web Demo搭建"></a>SpringBoot Web Demo搭建</h1><p>自从Spring配置注解和SpringBoot诞生以来，越来越少人去写web.xml和applicationContext.xml配置文件了。但为了方便直接了解Dispatcher的原理，Demo直接用SpringBoot的starter一键式搭建。</p>
+<p>直接添加web的starter依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> &lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.0.4.RELEASE&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>看下这个starter包含什么内容<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/starter.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>绿框是springMVC的依赖，红框是Spring自动配置的依赖，蓝框则是内嵌tomcat的依赖。里面Spring的版本是5.0.8 RELEASE的。</p>
+<p>SpringBoot启动类<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/appliaction.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<p>测试controller<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/controller.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<p>启动项目后，在浏览器里面输入<code>http://localhost:8080/hello?name=Zack</code>。结果返回<code>Hello Zack</code>。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/test-demo.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<p>以上就是我们现在利用SpringMVC的基本内容，下面我们来看下SpringMVC如何利用DispatcherServlet做拦截分发的。</p>
+<h1 id="DispatcherServlet源码分析"><a href="#DispatcherServlet源码分析" class="headerlink" title="DispatcherServlet源码分析"></a>DispatcherServlet源码分析</h1><p>当一个请求进来的时候，会先执行各种filter，过滤掉最终需要的请求，然后会落到DispatcherServlet中的<strong>doService()</strong>方法。该方法是预先设置一些特殊请求参数，然后再转发给<strong>doDispatch()</strong>做真正的处理转发。</p>
+<p>看一下<strong>doDispatch()</strong>的注释说明<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/dispatcher-annotion.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>该方法的作用就是执行实际分发到的handler。</p>
+<ul>
+<li>Handler通过HandlerMapping的优先级获取。HandlerAdapter通过查询DispatcherServlet已装载的HandlerAdapter，并且支持该Handler而获取的。</li>
+<li>所有的HTTP请求都是<strong>doDispatch()</strong>去处理的。具体是落到哪个方法去处理业务逻辑，取决于HandlerAdapters或者handlers。</li>
+</ul>
+<p>从注释可知，整个的分发逻辑核心，就在于HandlerAdapter和Handler。那这两到底是什么东西？</p>
+<p>官网上的说明<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/handlerAdapter.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>HandlerAdapter协助DispatcherServlet去调用对应的handler，忽略具体handler是怎么调用的。例如调用注解形式的controller需要处理注解，xml配置形式的要解析配置文件。这个适配器就是为了帮助DispatcherServlet屏蔽掉处理具体的细节。</p>
+<p>至于Handler没有清晰解释，但我们debug源码可以发现，Handler其实就是实际分配到具体需要去处理的方法(对比下图红框和上面Demo的controller)。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/handler.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<p>回到<strong>doDispatch()</strong>这个方法的源码上，看到<strong>getHandler()</strong>、<strong>getHandlerAdapter()</strong>就是获取Handler和HandlerAdapter所在。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/methods.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<h2 id="getHandler"><a href="#getHandler" class="headerlink" title="getHandler()"></a>getHandler()</h2><p>看下<strong>getHandler()</strong>源码<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/getHandler.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>整个方法就那么几行，不过需要注意有两个点。一个是该方法是返回<strong>HandlerExecutionChain</strong>类型，而不是一个Handler。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/HandlerExecutionChain.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br><strong>HandlerExecutionChain</strong>其实就是Handler的一层封装，还包含Handler对应的interceptor拦截器，用于执行Handler的一些前置和后置的操作。</p>
+<p>另外一个点，<strong>HandlerExecutionChain</strong>是按顺序遍历<strong>handlerMappings</strong>拿出来的。那<strong>HandlerMapping</strong>又是什么呢？<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/handlerMapping-explanation.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>从官网说明可知，它是一个请求和handler（实际是<strong>HandlerExecutionChain</strong>）的关联Map，通俗的说就是路由与处理逻辑的关联。它主要有两个实现，一个是<strong>RequestMappingHandlerMapping</strong>（支持注解形式方法），另一个是<strong>SimpleUrlHandlerMapping</strong>（维护显示注册的URI资源）。</p>
+<p>由此可推测，在Spring启动的时候，就会去扫描注解、注册的静态资源，从而初始化这个<strong>handlerMappings</strong>。具体逻辑就在<strong>DispatcherServlet</strong>中的<strong>initHandlerMappings</strong>方法内。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/initHandlerMapping.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>初始化的方法内，主要有三步：</p>
+<ol>
+<li>从Spring的ApplicationContext中取出HandlerMapping的Bean</li>
+<li>然后对上面取出来的Bean做优先级排序，主要对是@Order注解的排序</li>
+<li>如果上面取不出Bean，则用默认策略。</li>
+</ol>
+<p>对于第三点的默认策略，可以找到<strong>DispatcherServlet.properties</strong>这个文件，里面配置了一些默认HandlerMapping、HandlerAdapter等相关类。</p>
+<p>在初始化<strong>handlerMappings</strong>后，如果有请求进来，后面的request就用请求的路由与<strong>HandlerMapping</strong>对比，最后找出<strong>Handler</strong>（<strong>HandlerExecutionChain</strong>）。</p>
+<h2 id="getHandlerAdapter"><a href="#getHandlerAdapter" class="headerlink" title="getHandlerAdapter()"></a>getHandlerAdapter()</h2><p>在取出实际处理的<strong>Handler</strong>后，就需要用它找出support它的适配器（<strong>HandlerAdapter</strong>）。按照前面对<strong>HandlerAdapter</strong>的描述，对于Demo而言，support这个<strong>Handler</strong>必定是<strong>RequestMappingHandlerAdapter</strong>。</p>
+<p>这个逻辑也非常简单，同样是遍历已初始化的<strong>handlerAdapters</strong>（初始化的过程类似<strong>handlerMappings</strong>），然后对于具体每个<strong>handlerAdapter</strong>，调用其<strong>support()</strong>方法，看是否支持。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/getHandlerAdapter.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<p><strong>supports()</strong>方法也很简单，就用instanceof判断handler是否Adapter自己支持的类。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/supports.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<h2 id="HandlerAdapter-handle"><a href="#HandlerAdapter-handle" class="headerlink" title="HandlerAdapter.handle()"></a>HandlerAdapter.handle()</h2><p>在获取完<strong>Handler</strong>和<strong>HandlerAdapter</strong>后，就可以执行<strong>HandlerAdapter</strong>中的handle方法，其实际只是调用Handler的方法。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/ha-handle.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ
+==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<p>我们按Demo例子，看下<strong>HttpRequestHandlerAdapter</strong>的<strong>handle()</strong>方法实现。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/handlemethod.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>这个方法里面就是用HttpServlet的Request和Reponse去调用我们自己写的controller里面的方法。需要注意的是，这个方法返回的是<strong>ModelAndView</strong>，但我们目前基于Rest架构是已经不用的了，所以方法返回<strong>null</strong>回去了。</p>
+<h2 id="Handler的前置后置处理"><a href="#Handler的前置后置处理" class="headerlink" title="Handler的前置后置处理"></a>Handler的前置后置处理</h2><p>前面提到<strong>Handler</strong>是被封装在<strong>HandlerExecutionChain</strong>里面的，其中还包含一些前置后置的拦截器。所以在执行<strong>HandlerAdapter.handle()</strong>前后会有对<strong>HandlerExecutionChain</strong>的调用，执行<strong>interceptor</strong>对前后置处理的方法<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/interceptors.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<p>具体里面的实现就是执行<strong>interceptor</strong>的<strong>preHandle()</strong>和<strong>postHandle()</strong>方法。<br><img src="http://qiniu.zackku.com/image/java-spring-mvc/pre-post-handle.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<p>回过头来想下，这里的前后置处理会包括什么呢？在<strong>HandlerInterceptor</strong>注解上有说明三个实现类，分别是<strong>UserRoleAuthorizationInterceptor</strong>（检查用户权限）、<strong>LocaleChangeInterceptor</strong>（修改本地时间）、<strong>ThemeChangeInterceptor</strong>（修改当前主题）。可以看出<strong>HandlerInterceptor</strong>基本都是对请求的一些预处理和结果封装。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>以上就是SpringMVC中<strong>DispatcherServlet</strong>的基本过程。下面来总结下以上内容：</p>
+<ol>
+<li>前后端的架构演变导致SpringMVC的使用发生改变，更多着重在“C”上了。</li>
+<li>“C”的核心在<strong>DispatcherServlet</strong>的<strong>doDispatcher()</strong>方法中。</li>
+<li>利用request的路由，对比从已初始化的<strong>handlerMappings</strong>和<strong>handlerAdapters</strong>中获取<strong>handler</strong>和<strong>handlerAdapter</strong>。</li>
+<li><strong>handler</strong>是封装在<strong>HandlerExecutionChain</strong>中，其中还包括<strong>handler</strong>的前后置拦截器。</li>
+<li>最后利用适配器模式，调用<strong>HandlerAdapter.handle()</strong>方法去执行<strong>handler</strong>具体处理的业务逻辑。</li>
+<li>在执行具体业务逻辑前后会执行封装在<strong>HandlerExecutionChain</strong>里面的拦截器。</li>
+</ol>
+<hr>
+<p>更多技术文章、精彩干货，请关注<br>博客：zackku.com<br>微信公众号：Zack说码<br><img src="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png" alt=""></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>听说你想请我喝下午茶?~</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpeg" alt="Zack Ku 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpeg" alt="Zack Ku 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spring/" rel="tag"># Spring</a>
+          
+            <a href="/tags/MVC/" rel="tag"># MVC</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/redis-cluster/" rel="next" title="进阶的Redis之哈希分片原理与集群实战">
+                <i class="fa fa-chevron-left"></i> 进阶的Redis之哈希分片原理与集群实战
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar2.jpeg"
+                alt="Zack Ku" />
+            
+              <p class="site-author-name" itemprop="name">Zack Ku</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/rss2.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/zack-ku" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:gza_scnu@163.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i></a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://zack-blog.oss-cn-shenzhen.aliyuncs.com/image/blog-common/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png" target="_blank" title="WeChat" rel="external nofollow"><i class="fa fa-fw fa-wechat"></i></a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.luhuancheng.com/" title="luhuancheng" target="_blank">luhuancheng</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#到底什么是Spring-MVC，我们还在用吗？"><span class="nav-number">1.</span> <span class="nav-text">到底什么是Spring MVC，我们还在用吗？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#传统SpringMVC启动简述"><span class="nav-number">2.</span> <span class="nav-text">传统SpringMVC启动简述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SpringBoot-Web-Demo搭建"><span class="nav-number">3.</span> <span class="nav-text">SpringBoot Web Demo搭建</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DispatcherServlet源码分析"><span class="nav-number">4.</span> <span class="nav-text">DispatcherServlet源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#getHandler"><span class="nav-number">4.1.</span> <span class="nav-text">getHandler()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getHandlerAdapter"><span class="nav-number">4.2.</span> <span class="nav-text">getHandlerAdapter()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HandlerAdapter-handle"><span class="nav-number">4.3.</span> <span class="nav-text">HandlerAdapter.handle()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Handler的前置后置处理"><span class="nav-number">4.4.</span> <span class="nav-text">Handler的前置后置处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zack Ku</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.5"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.5"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.5"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.5"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.5"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.5"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/valine@1.1.8/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'sA9qkJThiH0lRmB46cSVdCJ3-gzGzoHsz',
+        appKey: 'eHgeHgsNtk4nHbcGFNcrz1W6',
+        placeholder: '说点什么...',
+        avatar:'retro',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=6.0.5"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
