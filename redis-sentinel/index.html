@@ -121,7 +121,7 @@
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-sentinel/sentinel-up.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-sentinel/part-failover.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
-<meta property="og:updated_time" content="2018-11-23T07:04:24.948Z">
+<meta property="og:updated_time" content="2018-11-23T07:37:44.442Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="进阶的Redis之Sentinel原理及实战">
 <meta name="twitter:description" content="Redis作为一款高效的内存数据库，可作用于方方面面，相信如今项目的开发都离不开它。大家可能都知道Redis是高可用的，但很少知道具体高可用是利用什么去实现的。 抛两个问题：  只部署一个Redis实例，如果这个实例挂了就无法读写数据了，那怎么做实例备份？ 部署了两个Redis，一主一从做复制，从只读，如果主挂了，那这个服务还怎么正常对外服务？  显然，要做到高可用，首先要有足够多的Redis实例">
@@ -493,10 +493,15 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SHUTDOWN</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>故障转移<br>redis-cli连上sentinel可以看到，当sentinel检测到主库下线，后面根据一些列操作把81替换为主库，其他库为81的从库，并且79是下线的新从库。<br><img src="http://qiniu.zackku.com/image/redis-sentinel/part-failover.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+</li>
+</ol>
+<p>参考文献：</p>
+<ul>
+<li><p>《Redis设计与实现》——黄健宏</p>
 <hr>
 <p>更多技术文章、精彩干货，请关注<br>博客：zackku.com<br>微信公众号：Zack说码<br><img src="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png" alt=""></p>
 </li>
-</ol>
+</ul>
 
       
     </div>
