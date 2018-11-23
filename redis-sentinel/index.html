@@ -118,11 +118,10 @@
 <meta property="og:description" content="Redis作为一款高效的内存数据库，可作用于方方面面，相信如今项目的开发都离不开它。大家可能都知道Redis是高可用的，但很少知道具体高可用是利用什么去实现的。 抛两个问题：  只部署一个Redis实例，如果这个实例挂了就无法读写数据了，那怎么做实例备份？ 部署了两个Redis，一主一从做复制，从只读，如果主挂了，那这个服务还怎么正常对外服务？  显然，要做到高可用，首先要有足够多的Redis实例">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-sentinel/introduce-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
-<meta property="og:image" content="http://qiniu.zackku.com/image/redis-sentinel/sentinel-server-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-sentinel/sentinel-up.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-sentinel/part-failover.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
-<meta property="og:updated_time" content="2018-11-23T07:01:55.191Z">
+<meta property="og:updated_time" content="2018-11-23T07:04:24.948Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="进阶的Redis之Sentinel原理及实战">
 <meta name="twitter:description" content="Redis作为一款高效的内存数据库，可作用于方方面面，相信如今项目的开发都离不开它。大家可能都知道Redis是高可用的，但很少知道具体高可用是利用什么去实现的。 抛两个问题：  只部署一个Redis实例，如果这个实例挂了就无法读写数据了，那怎么做实例备份？ 部署了两个Redis，一主一从做复制，从只读，如果主挂了，那这个服务还怎么正常对外服务？  显然，要做到高可用，首先要有足够多的Redis实例">
@@ -458,7 +457,6 @@
 <li>自动故障转移（Automatic failover），当主出现故障时，Sentinel会自动启动故障转移流程，把其中一个从库提升为主库，然后其他从库重新认新主。集群也会返回新的地址给客户端。</li>
 <li>配置提供（Configuration provider），Sentinel可以作为服务注册中心，让客户端直接连接请求Sentinel去获取主库的地址。如果出现自动故障转移，Sentinel也会提供新的主库地址。</li>
 </ul>
-<p><img src="http://qiniu.zackku.com/image/redis-sentinel/sentinel-server-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>（出处《Redis设计与实现》——黄健宏）</p>
 <p>P.S. 文中所描述的库和服务器都是指Redis的server实例。</p>
 <h1 id="高可用工作原理"><a href="#高可用工作原理" class="headerlink" title="高可用工作原理"></a>高可用工作原理</h1><p>下面我们以Sentinel的故障转移为核心，来看看它具体是怎么实现Sentinel的。</p>
 <ul>
