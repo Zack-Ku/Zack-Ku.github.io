@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://zackku.com/redis-sentinel/</loc>
+    
+    <lastmod>2018-11-23T01:51:20.910Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zackku.com/redis-rdb-aof/</loc>
+    
+    <lastmod>2018-11-23T01:49:41.387Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://zackku.com/spring-mvc/</loc>
     
-    <lastmod>2018-11-21T11:41:48.763Z</lastmod>
+    <lastmod>2018-11-21T11:49:55.348Z</lastmod>
     
   </url>
   
@@ -33,20 +47,6 @@
     <loc>http://zackku.com/redis-cluster/</loc>
     
     <lastmod>2018-11-09T08:11:19.242Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zackku.com/redis-rdb-aof/</loc>
-    
-    <lastmod>2018-11-08T02:34:02.952Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zackku.com/redis-sentinel/</loc>
-    
-    <lastmod>2018-10-22T11:49:30.639Z</lastmod>
     
   </url>
   
