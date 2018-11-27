@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://zackku.com/about/index.html</loc>
+    
+    <lastmod>2018-11-27T09:51:42.750Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://zackku.com/redis-sentinel/</loc>
     
     <lastmod>2018-11-23T07:37:44.442Z</lastmod>
@@ -110,13 +117,6 @@
     <loc>http://zackku.com/spring-aop/</loc>
     
     <lastmod>2018-10-17T08:10:59.012Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zackku.com/about/index.html</loc>
-    
-    <lastmod>2018-10-17T08:04:25.869Z</lastmod>
     
   </url>
   
