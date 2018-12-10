@@ -137,7 +137,7 @@
 <meta property="og:image" content="http://qiniu.zackku.com/image/docker-in-act/fenceng.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/docker-in-act/docker-compose.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
-<meta property="og:updated_time" content="2018-12-10T08:44:02.710Z">
+<meta property="og:updated_time" content="2018-12-10T08:49:44.020Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="都9102年了，还不会Docker？10分钟带你从入门操作到实战上手">
 <meta name="twitter:description" content="Docker简述Docker是一种OS虚拟化技术，是一个开源的应用容器引擎。它可以让开发者将应用打包到一个可移植的容器中，并且该容器可以运行在几乎所有linux系统中（Windows10目前也原生支持，Win10前需要内置虚拟机），正所谓“一次打包，到处运行”。 Docker容器的运行是完全的沙箱机制，相互之间不会有任何关联（除非自己串联集群）。网络、存储、进程等资源，不仅对于不同的容器是相互隔离">
@@ -460,7 +460,7 @@
         <h1 id="Docker简述"><a href="#Docker简述" class="headerlink" title="Docker简述"></a>Docker简述</h1><p>Docker是一种OS虚拟化技术，是一个开源的应用容器引擎。它可以让开发者将应用打包到一个可移植的容器中，并且该容器可以运行在几乎所有linux系统中（Windows10目前也原生支持，Win10前需要内置虚拟机），正所谓“一次打包，到处运行”。</p>
 <p>Docker容器的运行是完全的沙箱机制，相互之间不会有任何关联（除非自己串联集群）。网络、存储、进程等资源，不仅对于不同的容器是相互隔离，对于宿主机和容器直接也是隔离的，除非你手动映射暴露端口或者挂载存储卷。</p>
 <p>很多人不理解，Docker和虚拟机到底有什么区别。<br><img src="http://qiniu.zackku.com/image/docker-in-act/architecture-vm-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><a id="more"></a><br><img src="http://qiniu.zackku.com/image/docker-in-act/architecture-docker-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>从这两张结构图来看，Docker比虚拟机少了一层虚拟机操作系统，Docker的应用直接Docker引擎上运行。由于虚拟机需要一层操作系统，所以会导致虚拟机的体积非常大，通常在几G到十几G之间。并且通常一个虚拟机上，不只一个应用，因此对于整体的虚拟集群管理并不太友好，比较难做到灵活分配。</p>
-<p>而一个Docker镜像的体积大约在几十M到几百M之间，一般一个镜像只打包一个应用，由多个镜像组成一个完整的项目，并且镜像易于复制，可以跨平台运行，这样可以使项目的部署管理有更好的灵活性。所以Docker无聊从资源消耗上、管理上、使用上都在虚拟机之上，因此我们又有何理由不使用这样的容器化技术呢？</p>
+<p>而一个Docker镜像的体积大约在几十M到几百M之间，一般一个镜像只打包一个应用，由多个镜像组成一个完整的项目，并且镜像易于复制，可以跨平台运行，这样可以使项目的部署管理有更好的灵活性。所以Docker无论从资源消耗上、管理上、使用上都在虚拟机之上，因此我们又有何理由不使用这样的容器化技术呢？</p>
 <p>对于容器化技术的学习，可谓是深如海。从基本的镜像、容器操作，到镜像的打包、容器的部署，再到企业生产级的容器集群管理技术（Docker官方的Swarm、Google的Kubernetes），如此多的内容，并不是所有人技术人员都能一朝学会。不过除了生产级别的集群管理技术有难度意外，其他内容从学习使用的角度来说，其实是非常简单的，况且K8s这种东西，对于普通开发来说也是很少能接触到。</p>
 <p>说到这里，可能还有很多人觉得这个是公司层面、运维层面的操作，不是很了解Docker对于普通开发来说，意味着什么，对我们有什么好处？</p>
 <ul>
@@ -478,7 +478,7 @@
 </ul>
 <p>镜像、容器、仓库的关系如下：<br><img src="http://qiniu.zackku.com/image/docker-in-act/lifecycle.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>一句话总结就是，从仓库中拉取镜像，利用镜像生成容器。</p>
 <h1 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h1><p>了解完Docker的基本概念，我们开始来开始学习下入门操作。此处省略所有的Docker安装过程，自己去官网下载就行了，基本是傻瓜式安装。</p>
-<h2 id="拉取镜像"><a href="#拉取镜像" class="headerlink" title="拉取镜像"></a>拉取镜像</h2><p>通过<code>docker pull xxx</code>命令，可以从远程仓库（默认是Docker Hub）中拉取所需要的镜像。</p>
+<h2 id="拉取镜像"><a href="#拉取镜像" class="headerlink" title="拉取镜像"></a>拉取镜像</h2><p>通过<code>docker pull ${image_uri}:${image_tag}</code>命令，可以从远程仓库（默认是Docker Hub）中拉取所需要的镜像。</p>
 <p>在<a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker Hub</a>的网站上可以搜索下自己需要的镜像以及版本。例如Ubuntu，上面提供了几个版本。<br><img src="http://qiniu.zackku.com/image/docker-in-act/ubuntu.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>我们拉一下<strong>16.04</strong>版本的ubuntu镜像。然后通过<code>docker images</code>命令，查看保存在本地镜像，发现多了一个ubuntu的镜像。<br><img src="http://qiniu.zackku.com/image/docker-in-act/ubuntu-image.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
 <h2 id="容器创建、启动、停止、登入"><a href="#容器创建、启动、停止、登入" class="headerlink" title="容器创建、启动、停止、登入"></a>容器创建、启动、停止、登入</h2><p>有了镜像以后，就可以通过<code>docker run -it ${image_id}</code>创建启动一个容器了。</p>
 <p><code>image_id</code>是镜像的id，通过<code>docker images</code>能查看到，也可以是镜像名(REPOSITORY:TAG)。</p>
