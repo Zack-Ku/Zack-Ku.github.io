@@ -121,7 +121,6 @@
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-rdb-aof/save-rdb.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-rdb-aof/db-conf.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-rdb-aof/redis-load-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
-<meta property="og:image" content="http://qiniu.zackku.com/image/redis-rdb-aof/load-rule.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-rdb-aof/append.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-rdb-aof/fsync.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-rdb-aof/aof-file.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
@@ -131,7 +130,7 @@
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-rdb-aof/rewrite-test-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/redis-rdb-aof/plan.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
-<meta property="og:updated_time" content="2018-11-23T01:49:41.387Z">
+<meta property="og:updated_time" content="2018-12-10T01:56:16.082Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="进阶的Redis之数据持久化RDB与AOF">
 <meta name="twitter:description" content="大家都知道，Redis之所以性能好，读写快，是因为Redis是一个内存数据库，它的操作都几乎基于内存。但是内存型数据库有一个很大的弊端，就是当数据库进程崩溃或系统重启的时候，如果内存数据不保存的话，里面的数据就会丢失不见了。这样的数据库并不是一个可靠的数据库。 所以数据的持久化是内存型数据库的重中之重。它不仅提供数据保存硬盘的功能，还可以借此用硬盘容量扩展数据存储空间，使得Redis的可以存储超过">
@@ -465,7 +464,7 @@
 <p>在Redis中，这个自动保存RDB的功能是默认开启的。</p>
 <h2 id="RDB文件加载"><a href="#RDB文件加载" class="headerlink" title="RDB文件加载"></a>RDB文件加载</h2><p>先kill掉Redis进程，再重新启动Redis Server，会发现日志会有这样的一行，<br><img src="http://qiniu.zackku.com/image/redis-rdb-aof/redis-load-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
 <p>并且Redis中，依然有之前设置的三个值。说明Redis在启动的时候，会加载数据初始化。</p>
-<p>不过，这里加载的初始化数据不一定是RDB的。如果Redis开启了AOF，会优先从AOF初始化数据，否则才会加载RDB的数据。<br><img src="http://qiniu.zackku.com/image/redis-rdb-aof/load-rule.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>（出处《Redis设计与实现》——黄健宏）</p>
+<p>不过，这里加载的初始化数据不一定是RDB的。如果Redis开启了AOF，会优先从AOF初始化数据，否则才会加载RDB的数据。</p>
 <h2 id="RDB优缺点"><a href="#RDB优缺点" class="headerlink" title="RDB优缺点"></a>RDB优缺点</h2><p>优点：      </p>
 <ol>
 <li>RDB是某一时间点的快照，是一个紧凑的单文件，更多用于数据备份。可以按每小时或每日来备份，方便从不同的版本恢复数据。</li>
@@ -703,6 +702,10 @@
                 <div class="site-state-item site-state-categories">
                   <a href="/categories/index.html">
                     
+                    
+                      
+                    
+                      
                     
                       
                     
