@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>http://zackku.com/gradle-lombok-config/</loc>
+    <lastmod>2019-04-12T05:54:43.679Z</lastmod>
+    <data>
+        <display>
+        <title>Gradle的依赖方式——Lombok在Gradle中的正确配置姿势</title>
+        <pubTime>2019-04-12T05:54:43.000Z</pubTime>
+        
+        <tag>gradle</tag>
+         
+         
+           
+             
+              <breadCrumb title="踩坑记录" url="http://zackku.com/categories/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://zackku.com/docker-in-act/</loc>
     <lastmod>2018-12-10T08:49:44.020Z</lastmod>
     <data>
