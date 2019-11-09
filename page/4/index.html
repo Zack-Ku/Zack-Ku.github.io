@@ -334,6 +334,154 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zackku.com/java-thread-reentranreedwritelock/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zack Ku">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar2.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zack's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/java-thread-reentranreedwritelock/" itemprop="url">Java多线程——ReentrantReadWriteLock源码阅读</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-27T01:49:26+08:00">2018-08-27</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java多线程/" itemprop="url" rel="index"><span itemprop="name">Java多线程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <!-- 为什么要read write lock -->
+<p>之前讲了<a href="/java-thread-aqs">《AQS源码阅读》</a>和<a href="/java-thread-reentrantlock">《ReentrantLock源码阅读》</a>，本次将延续阅读下ReentrantReadWriteLock，建议没看过之前两篇文章的，先大概了解下，有些内容会基于之前的基础上阅读。<br>这个并不是ReentrantLock简单的升级，而是落地场景的优化，我们来详细了解下吧。</p>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>JUC包里面已经有一个ReentrantLock了，为何还需要一个ReentrantReadWriteLock呢？看看头注解找点线索。<br><img src="http://qiniu.zackku.com/image/java-thread-reentrantreadwritelock/readwritelock-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>它是ReadWriteLock接口的实现。那看看这个接口怎么说<br><img src="http://qiniu.zackku.com/image/java-thread-reentrantreadwritelock/readwritelock-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt="">
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/java-thread-reentranreedwritelock/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://zackku.com/java-thread-reentrantlock/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -909,158 +1057,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zackku.com/spring-transaction-in-class-problem/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Zack Ku">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar2.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zack's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/spring-transaction-in-class-problem/" itemprop="url">Spring AOP Transactional注解不能用于内部调用问题</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-25T16:18:53+08:00">2018-05-25</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Spring分析学习/" itemprop="url" rel="index"><span itemprop="name">Spring分析学习</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>Spring框架中的Transactional注解是几个比较常用注解之一，作用就是用于事务的管理。如果系统接的Mybatis的数据库，那么Spring的Transactional就会接替sqlSession的生命周期管理。<br>它的用法非常简单，就是把它标注在需要事务的方法上面即可。例如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Transactional(rollbackFor = Exception.class)</span><br><span class="line">public void createBidOffer() &#123;</span><br><span class="line">    insertBidAndOffer();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>但是并不是放到任何方法上，它都会生效的。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/spring-transaction-in-class-problem/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1107,7 +1108,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-count">41</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1241,7 +1242,7 @@
                     
                       
                     
-                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-count">40</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

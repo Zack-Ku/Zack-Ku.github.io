@@ -4,6 +4,28 @@
 
     
   <url>
+    <loc>http://zackku.com/consensus/</loc>
+    <lastmod>2019-11-09T02:37:37.005Z</lastmod>
+    <data>
+        <display>
+        <title>深入浅出分布式共识性（一）——拜占庭将军问题</title>
+        <pubTime>2019-11-09T02:37:36.000Z</pubTime>
+        
+        <tag>zk</tag>
+         
+        <tag>分布式一致性</tag>
+         
+         
+           
+             
+              <breadCrumb title="计算机理论" url="http://zackku.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%90%86%E8%AE%BA/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://zackku.com/gradle-lombok-config/</loc>
     <lastmod>2019-04-12T05:54:43.679Z</lastmod>
     <data>

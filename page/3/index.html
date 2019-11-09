@@ -334,6 +334,157 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zackku.com/jvm-gc-base/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zack Ku">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar2.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zack's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/jvm-gc-base/" itemprop="url">必知必会JVM垃圾回收——对象搜索算法与回收算法</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-27T15:09:36+08:00">2018-09-27</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/JVM深入/" itemprop="url" rel="index"><span itemprop="name">JVM深入</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>垃圾回收（GC）是JVM的一大杀器，它使程序员可以更高效地专注于程序的开发设计，而不用过多地考虑对象的创建销毁等操作。但是这并不是说程序员不需要了解GC。GC只是Java编程中一项自动化工具，任何一个工具都有它适用的范围，当超出它的范围的时候，可能它将不是那么自动，而是需要人工去了解与适应地适用。</p>
+<p>拥有一定工作年限的程序员，在工作期间肯定会经常碰到像内存溢出、内存泄露、高并发的场景。这时候在应对这些问题或场景时，如果对GC不了解，很可能会成为个人的发展瓶颈。</p>
+<p>接下来的两文将详细学习下JVM中垃圾回收（GC）的各个知识要点。本文先从GC的算法开始先了解，铺垫好基础，下一篇再详细讲JVM具体的GC实现。</p>
+<h1 id="GC对象搜索算法"><a href="#GC对象搜索算法" class="headerlink" title="GC对象搜索算法"></a>GC对象搜索算法</h1><p>垃圾回收，第一件事就是要搞清楚哪些东西是垃圾，而后才能对这些垃圾进行回收。</p>
+<p>那么有什么办法识别对象是否为无用的垃圾呢？狭义地，怎么判断对象是否没被引用呢？</p>
+<p>通常有以下两种算法去识别判断
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/jvm-gc-base/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://zackku.com/spring-aop/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -913,159 +1064,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zackku.com/java-thread-reentranreedwritelock/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Zack Ku">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar2.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zack's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/java-thread-reentranreedwritelock/" itemprop="url">Java多线程——ReentrantReadWriteLock源码阅读</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-27T01:49:26+08:00">2018-08-27</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java多线程/" itemprop="url" rel="index"><span itemprop="name">Java多线程</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <!-- 为什么要read write lock -->
-<p>之前讲了<a href="/java-thread-aqs">《AQS源码阅读》</a>和<a href="/java-thread-reentrantlock">《ReentrantLock源码阅读》</a>，本次将延续阅读下ReentrantReadWriteLock，建议没看过之前两篇文章的，先大概了解下，有些内容会基于之前的基础上阅读。<br>这个并不是ReentrantLock简单的升级，而是落地场景的优化，我们来详细了解下吧。</p>
-<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>JUC包里面已经有一个ReentrantLock了，为何还需要一个ReentrantReadWriteLock呢？看看头注解找点线索。<br><img src="http://qiniu.zackku.com/image/java-thread-reentrantreadwritelock/readwritelock-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""><br>它是ReadWriteLock接口的实现。那看看这个接口怎么说<br><img src="http://qiniu.zackku.com/image/java-thread-reentrantreadwritelock/readwritelock-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt="">
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/java-thread-reentranreedwritelock/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1112,7 +1115,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-count">41</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1246,7 +1249,7 @@
                     
                       
                     
-                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-count">40</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
