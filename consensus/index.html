@@ -124,7 +124,7 @@
 <meta property="og:image" content="http://qiniu.zackku.com/image/consensus/baizhenting-solu.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/consensus/pow.jpg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
-<meta property="og:updated_time" content="2019-11-09T05:25:50.549Z">
+<meta property="og:updated_time" content="2019-11-09T05:27:31.745Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="什么拜占庭将军问题？比特币是如何解决的?——深入浅出分布式共识性（一）">
 <meta name="twitter:description" content="之前《浅谈分布式CAP定理》简单介绍了数据在分布式系统中存在的必然定理。简单回顾一下，一个数据在一个节点需要同步到另外一个节点的过程中，在未完成同步的时候，会出现数据不一致的情况，所以此时必然存在分区容错性（Partition tolerance）。分布式系统只能从一致性（Consistency）或可用性（Availability）之间去选择。 CAP讲的是分布式一致性，而这次我们来聊聊分布式共识">
@@ -463,7 +463,7 @@
 <p><strong>工作量证明</strong>是一种对应服务与资源滥用、或是拒绝服务攻击的经济对策。一般是要求用户进行一些耗时适当的复杂运算，并且答案能被服务方快速验算，以此耗用的时间、设备与能源做为担保成本，以确保服务与资源是被真正的需求所使用。（来自维基百科的解释）</p>
 </blockquote>
 <p><img src="http://qiniu.zackku.com/image/consensus/pow.jpg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt="图片来源网络"></p>
-<p>结合比特币的场景去理解，用户是需要通过挖矿来获得比特币，而挖矿是需要花费大量的计算资源的。而这个挖矿的过程其实是比特币设计的一道解密算法，用户（节点）是需要一定量的计算才能获得答案，然后其他给节点验算，成功后最终获得比特币奖励争取记账权。一句话概括工作量证明就是不校验你的过程，只看你的结果，但获取这个结果是有壁垒的。具体的算法原理在后续讲到共识性算法的应用我们再用新篇幅去阐述。</p>
+<p>结合比特币的场景去理解，用户是需要通过挖矿来获得比特币，而挖矿是需要花费大量的计算资源的。这个挖矿的过程其实是比特币设计的一道解密算法，用户（节点）是需要一定量的计算才能获得答案，然后其他给节点验算，成功后最终获得比特币奖励争取记账权。一句话概括工作量证明就是不校验你的过程，只看你的结果，但获取这个结果是有壁垒的。具体的算法原理在后续讲到共识性算法的应用我们再用新篇幅去阐述。</p>
 <p>那么比特币怎样才能造假呢？其实它本质依然是少数服从多数的投票，节点获取结果后是需要其他节点进行验证投票的，如果你拥有大于50%的假节点，的确是可以篡改数据，控制交易。但是工作量证明引入使得构造一个节点的成本已经足够大了，在千千万的节点下想要构造大于50%的假节点，估计有这种财力去实现的人已经是世界首富了。</p>
 <p>拜占庭将军错误看似一个非常严重的问题，能造成灾难性后果，但其实在大部分场景下并不会出现“拜错”。下一篇将会落到比较应用层面的共识性算法，聊下市面上主流的分布式中间件是怎么在不考虑“拜错”的情况下，解决分布式共识性问题的。</p>
 <hr>
