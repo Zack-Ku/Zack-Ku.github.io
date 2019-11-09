@@ -114,7 +114,7 @@
 <meta name="description" content="之前《浅谈分布式CAP定理》简单介绍了数据在分布式系统中存在的必然定理。简单回顾一下，一个数据在一个节点需要同步到另外一个节点的过程中，在未完成同步的时候，会出现数据不一致的情况，所以此时必然存在分区容错性（Partition tolerance）。分布式系统只能从一致性（Consistency）或可用性（Availability）之间去选择。 CAP讲的是分布式一致性，而这次我们来聊聊分布式共识">
 <meta name="keywords" content="分布式共识性">
 <meta property="og:type" content="article">
-<meta property="og:title" content="什么拜占庭将军问题？比特币是如何解决的——深入浅出分布式共识性（一）">
+<meta property="og:title" content="什么拜占庭将军问题？比特币是如何解决的?——深入浅出分布式共识性（一）">
 <meta property="og:url" content="http://zackku.com/consensus/index.html">
 <meta property="og:site_name" content="Zack&#39;s Blog">
 <meta property="og:description" content="之前《浅谈分布式CAP定理》简单介绍了数据在分布式系统中存在的必然定理。简单回顾一下，一个数据在一个节点需要同步到另外一个节点的过程中，在未完成同步的时候，会出现数据不一致的情况，所以此时必然存在分区容错性（Partition tolerance）。分布式系统只能从一致性（Consistency）或可用性（Availability）之间去选择。 CAP讲的是分布式一致性，而这次我们来聊聊分布式共识">
@@ -124,9 +124,9 @@
 <meta property="og:image" content="http://qiniu.zackku.com/image/consensus/baizhenting-solu.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/consensus/pow.jpg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
-<meta property="og:updated_time" content="2019-11-09T05:24:50.418Z">
+<meta property="og:updated_time" content="2019-11-09T05:25:50.549Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="什么拜占庭将军问题？比特币是如何解决的——深入浅出分布式共识性（一）">
+<meta name="twitter:title" content="什么拜占庭将军问题？比特币是如何解决的?——深入浅出分布式共识性（一）">
 <meta name="twitter:description" content="之前《浅谈分布式CAP定理》简单介绍了数据在分布式系统中存在的必然定理。简单回顾一下，一个数据在一个节点需要同步到另外一个节点的过程中，在未完成同步的时候，会出现数据不一致的情况，所以此时必然存在分区容错性（Partition tolerance）。分布式系统只能从一致性（Consistency）或可用性（Availability）之间去选择。 CAP讲的是分布式一致性，而这次我们来聊聊分布式共识">
 <meta name="twitter:image" content="http://qiniu.zackku.com/image/consensus/vote.jpg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 
@@ -146,7 +146,7 @@
     sidebar: "",
   };
 </script>
-  <title>什么拜占庭将军问题？比特币是如何解决的——深入浅出分布式共识性（一） | Zack's Blog</title>
+  <title>什么拜占庭将军问题？比特币是如何解决的?——深入浅出分布式共识性（一） | Zack's Blog</title>
   
 
 
@@ -361,7 +361,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">什么拜占庭将军问题？比特币是如何解决的——深入浅出分布式共识性（一）</h2>
+          <h2 class="post-title" itemprop="name headline">什么拜占庭将军问题？比特币是如何解决的?——深入浅出分布式共识性（一）</h2>
         
 
         <div class="post-meta">
