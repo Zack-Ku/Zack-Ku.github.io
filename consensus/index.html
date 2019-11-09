@@ -108,23 +108,24 @@
 <script data-ad-client="ca-pub-4904947778245344" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
   
-  <meta name="keywords" content="zk,分布式一致性," />
+  <meta name="keywords" content="分布式共识性," />
 
 
 <meta name="description" content="之前《浅谈分布式CAP定理》简单介绍了数据在分布式系统中存在的必然定理。简单回顾一下，一个数据在一个节点需要同步到另外一个节点的过程中，在未完成同步的时候，会出现数据不一致的情况，所以此时必然存在分区容错性（Partition tolerance）。分布式系统只能从一致性（Consistency）或可用性（Availability）之间去选择。 CAP讲的是分布式一致性，而这次我们来聊聊分布式共识">
-<meta name="keywords" content="zk,分布式一致性">
+<meta name="keywords" content="分布式共识性">
 <meta property="og:type" content="article">
-<meta property="og:title" content="深入浅出分布式共识性（一）——拜占庭将军问题">
+<meta property="og:title" content="拜占庭将军问题与比特币如何造假">
 <meta property="og:url" content="http://zackku.com/consensus/index.html">
 <meta property="og:site_name" content="Zack&#39;s Blog">
 <meta property="og:description" content="之前《浅谈分布式CAP定理》简单介绍了数据在分布式系统中存在的必然定理。简单回顾一下，一个数据在一个节点需要同步到另外一个节点的过程中，在未完成同步的时候，会出现数据不一致的情况，所以此时必然存在分区容错性（Partition tolerance）。分布式系统只能从一致性（Consistency）或可用性（Availability）之间去选择。 CAP讲的是分布式一致性，而这次我们来聊聊分布式共识">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://qiniu.zackku.com/image/consensus/vote.jpg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
-<meta property="og:image" content="http://qiniu.zackku.com/image/consensus/baizhanting.jpg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/consensus/baizhanting3.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://qiniu.zackku.com/image/consensus/baizhenting-solu.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
-<meta property="og:updated_time" content="2019-11-09T02:37:37.005Z">
+<meta property="og:updated_time" content="2019-11-09T05:01:18.983Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="深入浅出分布式共识性（一）——拜占庭将军问题">
+<meta name="twitter:title" content="拜占庭将军问题与比特币如何造假">
 <meta name="twitter:description" content="之前《浅谈分布式CAP定理》简单介绍了数据在分布式系统中存在的必然定理。简单回顾一下，一个数据在一个节点需要同步到另外一个节点的过程中，在未完成同步的时候，会出现数据不一致的情况，所以此时必然存在分区容错性（Partition tolerance）。分布式系统只能从一致性（Consistency）或可用性（Availability）之间去选择。 CAP讲的是分布式一致性，而这次我们来聊聊分布式共识">
 <meta name="twitter:image" content="http://qiniu.zackku.com/image/consensus/vote.jpg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 
@@ -144,7 +145,7 @@
     sidebar: "",
   };
 </script>
-  <title>深入浅出分布式共识性（一）——拜占庭将军问题 | Zack's Blog</title>
+  <title>拜占庭将军问题与比特币如何造假 | Zack's Blog</title>
   
 
 
@@ -359,7 +360,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">深入浅出分布式共识性（一）——拜占庭将军问题</h2>
+          <h2 class="post-title" itemprop="name headline">拜占庭将军问题与比特币如何造假</h2>
         
 
         <div class="post-meta">
@@ -432,7 +433,7 @@
 <li>一致性：A点同步B点数据，然后两者之间的数据可以达成一致。</li>
 <li>共识性：一个或多个节点提议了一个值应当是什么后，采用一种大家都认可的方法，使得系统中所有进程对这个值达成一致意见。</li>
 </ul>
-<p><img src="http://qiniu.zackku.com/image/consensus/vote.jpg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<p><img src="http://qiniu.zackku.com/image/consensus/vote.jpg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt="图片来源网络"></p>
 <p>共识性比较常见的场景就是选主，例如redis主挂掉了，集群通用共识性算法选出一个主。比特币之类的电子货币也需要更复杂的共识性算法。</p>
 <p>下面我们一步步聊下分布式共识性的一些常见算法与问题。<br><a id="more"></a></p>
 <h2 id="拜占庭将军问题"><a href="#拜占庭将军问题" class="headerlink" title="拜占庭将军问题"></a>拜占庭将军问题</h2><p>Leslie Lamport(论文排版系统LaTeX的开发者，同时也是2013年的图灵奖得主)在其论文中描述了如下系统：</p>
@@ -444,20 +445,24 @@
 <p>此系统的名字叫做<strong>拜占庭将军问题</strong>。从描述中，可以显然知道，将军们需要通过少数服从多数的算法在分布式的场景下进行投票决议一个一致性的决定去执行。</p>
 <p>在拜占庭将军问题中，默认是认为信使是不会被截获并且消息会传递到的。更多的情况中，将军中可能会出现叛徒、信使会被截获冒充、消息无法到达。而叛徒或信使冒充会恶意地向其他将军投票，给不同将军展示不同的投票结果，从而破坏了将军们执行的一致性。而此类错误则称为<strong>拜占庭错误</strong>。</p>
 <p>如果系统能处理拜占庭将军错误正常运行的话，则称系统拥有<strong>拜占庭容错「Byzantine fault tolerance」</strong>，简称为<strong>BFT</strong>。</p>
-<h2 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h2><p>假设当时有5位将军投票（单数投票的结果必能形成少数服从多数），其中有1名是叛徒，4名忠诚的将军中出2人投进攻，2人投撤离的。<br><img src="http://qiniu.zackku.com/image/consensus/baizhanting.jpg?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
+<h2 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h2><p>假设当时有5位将军投票（单数投票的结果必能形成少数服从多数），其中有1名是叛徒，4名忠诚的将军中出2人投进攻，2人投撤离的。</p>
 <p>这时候叛徒可能故意给2名投进攻的将军送信表示投进攻，而给另外2名投撤离的将军送信表示投撤离。这样在2名投进攻的将领看来，投票结果是3人投进攻，从而发起进攻；而在2名投撤离的将军看来则是3人投撤离。这样各支军队的一致协同就遭到了破坏，结果是灾难性的。</p>
+<p><img src="http://qiniu.zackku.com/image/consensus/baizhanting3.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
 <p>即使这5个将军都是忠诚的，但投票结果是需要信使在将军之间去传递的，而这些信使在传递过程中是有可能被截冒充或者并没有传递到将军的投票结果，最终还是会影响军队的一致协同。</p>
 <p>上述的故事映射到计算机系统中，将军便成了计算机，而信使则是通信系统。有人会觉得这个问题可以通过加密或签名的方式解决，但本质上加密过程、签名算法也会出错。虽然加密和签名一定程度是可以解决这个问题，但这个问题并不是要讨论这些加密签名的强度，而是更多地在于研究集群系统客观上已经出现错误了，他们要怎么在存在错误的情况下让系统正常的工作。</p>
 <h2 id="经典的简单解决"><a href="#经典的简单解决" class="headerlink" title="经典的简单解决"></a>经典的简单解决</h2><p>首先要知道，为什么这个标题是<strong>经典的简单解决</strong>？因为这个解决只是个简单的解决，在现代系统很多场景中，并不具有普遍的解决能力。</p>
 <p>大家看完上面的例子，可能会涌现一种想法，就是在收到来自同一个将军的投票后，交换各自的结果检验看该将军是否叛徒。例如A将军把进攻指令发给B将军，把撤离指令发给C将军，那么BC将军交互一下来自A将军的指令，就可以知道A将军是个叛徒，然后把他揪出来干掉，不再听他的指令。</p>
-<p>但是这种做法根本不能解决问题。虽然在BC交换指令后，可以知道有叛徒的存在，但其实你并不能确定A就是叛徒，因为有可能BC交换指令的过程出现”拜错“，所以上面的思路并不能解决问题。<br><!--  做个图 --><br>回到问题本身，我们是需要在存在错误的情况下让系统正常进行，所以我们只需要设计一套系统在兼容这些”叛徒“就足够了。怎么理解？回到拜占庭军队上，拜占庭军队攻下一座城池至少需要6个将军，那么让军队装备更多将军，例如10个，在通过两两交互指令验证完消息后，可以知道有多少个叛徒的存在。只要忠诚的将军数大于等于6那么就可以执行指令（进攻或撤离），否则军队则按兵不动。这个容错率可以根据自己的系统进行设置，在这个方案被提出时，容错率描述是1/3。</p>
+<p>但是这种做法根本不能解决问题。虽然在BC交换指令后，可以知道有叛徒的存在，但其实你并不能确定A就是叛徒，因为有可能BC交换指令的过程出现”拜错“，所以上面的思路并不能解决问题。</p>
+<p>回到问题本身，我们是需要在存在错误的情况下让系统正常进行，所以我们只需要设计一套系统在兼容这些”叛徒“就足够了。怎么理解？回到拜占庭军队上，拜占庭军队攻下一座城池至少需要6个将军，那么让军队装备更多将军，例如10个，在通过两两交互指令验证完消息后，可以知道有多少个叛徒的存在。只要忠诚的将军数大于等于6那么就可以执行指令（进攻或撤离），否则军队则按兵不动。这个容错率可以根据自己的系统进行设置，在这个方案被提出时，容错率描述是1/3。</p>
+<p><img src="http://qiniu.zackku.com/image/consensus/baizhenting-solu.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim" alt=""></p>
 <p>开头也说到这个方案在现代系统并不具有普遍解决问题的能力。一是类似比特币这种分布式记账本千千万个节点，如果要进行两两的信息验证，这个过程和开销是非常大的，会变得不实际。另外就是并不是所有性质的系统都能允许错误节点的执行，例如交易、记账等。</p>
-<h2 id="先进的解决——工作量证明"><a href="#先进的解决——工作量证明" class="headerlink" title="先进的解决——工作量证明"></a>先进的解决——工作量证明</h2><p>在“简单解决”的方案提出之后，有非常多的方案算法被提出，实用拜占庭容错（PBFT）、联邦拜占庭协议（FBA）、授权拜占庭容错算法（dBFT）等等。由于其中的复杂度与文章篇幅问题，不一一赘述，有兴趣可以到网上查阅。</p>
+<h2 id="先进的解决——比特币的工作量证明"><a href="#先进的解决——比特币的工作量证明" class="headerlink" title="先进的解决——比特币的工作量证明"></a>先进的解决——比特币的工作量证明</h2><p>在“简单解决”的方案提出之后，有非常多的方案算法被提出，实用拜占庭容错（PBFT）、联邦拜占庭协议（FBA）、授权拜占庭容错算法（dBFT）等等。由于其中的复杂度与文章篇幅问题，不一一赘述，有兴趣可以到网上查阅。</p>
 <p>但其中一个比较有意思的是比特币中所用到的<strong>工作量证明「Proof Of Work，POW」</strong>可以大概提一下。</p>
 <blockquote>
 <p><strong>工作量证明</strong>是一种对应服务与资源滥用、或是拒绝服务攻击的经济对策。一般是要求用户进行一些耗时适当的复杂运算，并且答案能被服务方快速验算，以此耗用的时间、设备与能源做为担保成本，以确保服务与资源是被真正的需求所使用。（来自维基百科的解释）</p>
 </blockquote>
-<p>结合比特币的场景去理解，用户是需要通过挖矿来获得比特币，而挖矿是需要花费大量的计算资源的。而这个挖矿的过程其实是比特币设计的一道解密算法，用户（节点）是需要一定量的计算才能获得答案，然后其他给节点验算，成功后最终获得比特币。这个计算的节点是比特币提供的，所以只要通过相应的计算量为代价，必定能获得答案。但如果这个节点是假的，非比特币的节点，那么他的计算必定更加困难，因为它自身并不知道比特币的谜题算法，所以能获得答案的概率几乎为零。具体的算法原理在后续讲到共识性算法的应用我们再用新篇幅去阐述。</p>
+<p>结合比特币的场景去理解，用户是需要通过挖矿来获得比特币，而挖矿是需要花费大量的计算资源的。而这个挖矿的过程其实是比特币设计的一道解密算法，用户（节点）是需要一定量的计算才能获得答案，然后其他给节点验算，成功后最终获得比特币奖励争取记账权。一句话概括工作量证明就是不校验你的过程，只看你的结果，但获取这个结果是有壁垒的。具体的算法原理在后续讲到共识性算法的应用我们再用新篇幅去阐述。</p>
+<p>那么比特币怎样才能造假呢？其实它本质依然是少数服从多数的投票，节点获取结果后是需要其他节点进行验证投票的，如果你拥有大于50%的假节点，的确是可以篡改数据，控制交易。但是工作量证明引入使得构造一个节点的成本已经足够大了，在千千万的节点下想要构造大于50%的假节点，估计用光全球的电力去挖矿也做不到。</p>
 <p>拜占庭将军错误看似一个非常严重的问题，能造成灾难性后果，但其实在大部分场景下并不会出现“拜错”。下一篇将会落到比较应用层面的共识性算法，聊下市面上主流的分布式中间件是怎么在不考虑“拜错”的情况下，解决分布式共识性问题的。</p>
 <hr>
 <p>更多技术文章、精彩干货，请关注<br>个人博客：zackku.com<br>微信公众号：Zack说码<br><img src="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png" alt=""></p>
@@ -510,9 +515,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/zk/" rel="tag"># zk</a>
-          
-            <a href="/tags/分布式一致性/" rel="tag"># 分布式一致性</a>
+            <a href="/tags/分布式共识性/" rel="tag"># 分布式共识性</a>
           
         </div>
       
@@ -760,7 +763,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">40</span>
+                      
+                    
+                    <span class="site-state-item-count">39</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -836,7 +841,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#拜占庭将军问题"><span class="nav-number">1.</span> <span class="nav-text">拜占庭将军问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#举个例子"><span class="nav-number">2.</span> <span class="nav-text">举个例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#经典的简单解决"><span class="nav-number">3.</span> <span class="nav-text">经典的简单解决</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#先进的解决——工作量证明"><span class="nav-number">4.</span> <span class="nav-text">先进的解决——工作量证明</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#拜占庭将军问题"><span class="nav-number">1.</span> <span class="nav-text">拜占庭将军问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#举个例子"><span class="nav-number">2.</span> <span class="nav-text">举个例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#经典的简单解决"><span class="nav-number">3.</span> <span class="nav-text">经典的简单解决</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#先进的解决——比特币的工作量证明"><span class="nav-number">4.</span> <span class="nav-text">先进的解决——比特币的工作量证明</span></a></li></ol></div>
             
 
           </div>
