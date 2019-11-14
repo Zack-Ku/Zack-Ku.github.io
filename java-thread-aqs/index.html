@@ -104,11 +104,11 @@
 <script data-ad-client="ca-pub-4904947778245344" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
   
-  <meta name="keywords" content="Java,多线程,锁," />
+  <meta name="keywords" content="多线程,Java,锁," />
 
 
 <meta name="description" content="AQS，全称AbstractQueuedSynchronizer，是Concurrent包锁的核心，没有AQS就没有Java的Concurrent包。它到底是个什么，我们来看看源码的第一段注解是怎么说明">
-<meta name="keywords" content="Java,多线程,锁">
+<meta name="keywords" content="多线程,Java,锁">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java多线程——AQS框架源码阅读">
 <meta property="og:url" content="http://zackku.com/java-thread-aqs/index.html">
@@ -134,8 +134,7 @@
 <meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-aqs/acquire-8.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-aqs/release-1.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
 <meta property="og:image" content="http://qiniu.zackku.com/image/java-thread-aqs/release-2.png?imageMogr2/auto-orient/blur/1x0/quality/75|watermark/2/text/WmFja-ivtOeggQ==/font/5b6u6L2v6ZuF6buR/fontsize/400/fill/I0Y2RjZGNg==/dissolve/60/gravity/SouthEast/dx/10/dy/10|imageslim">
-<meta property="og:image" content="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png">
-<meta property="og:updated_time" content="2018-10-17T08:11:14.308Z">
+<meta property="og:updated_time" content="2019-11-09T08:59:30.574Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java多线程——AQS框架源码阅读">
 <meta name="twitter:description" content="AQS，全称AbstractQueuedSynchronizer，是Concurrent包锁的核心，没有AQS就没有Java的Concurrent包。它到底是个什么，我们来看看源码的第一段注解是怎么说明">
@@ -468,9 +467,11 @@
 <li>主要对外方法是加锁与解锁，区别是否中断、超时、共享或独占模式</li>
 </ol>
 <p>以上即使AQS的大致内容，可能有些部分难以理解，其实很正常，因为AQS提供的是流程模板与工具，没有实质落地的场景，是比较难理解的。等后面介绍<code>ReentranLock</code>与<code>ReentrantReadWriteLock</code>的时候，就可以更好更全面的了解整体AQS框架了。</p>
-<hr>
-<p>更多技术文章、精彩干货，请关注<br>博客：zackku.com<br>微信公众号：Zack说码<br><img src="http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png" alt=""></p>
-
+<!-- -------------------------------------------------------------
+更多技术文章、精彩干货，请关注
+博客：zackku.com
+微信公众号：Zack说码
+![](http://qiniu.zackku.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E5%BE%AE%E4%BF%A1%E6%A0%87%E5%87%86%E7%BB%BF%E7%89%88.png) -->
       
     </div>
 
@@ -519,9 +520,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Java/" rel="tag"># Java</a>
-          
             <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
           
             <a href="/tags/锁/" rel="tag"># 锁</a>
           

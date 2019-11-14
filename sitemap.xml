@@ -4,7 +4,21 @@
   <url>
     <loc>http://zackku.com/consensus/</loc>
     
-    <lastmod>2019-11-09T07:48:44.418Z</lastmod>
+    <lastmod>2019-11-14T02:24:09.633Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zackku.com/java-thread-lock-base/</loc>
+    
+    <lastmod>2019-11-09T08:59:37.455Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://zackku.com/java-thread-aqs/</loc>
+    
+    <lastmod>2019-11-09T08:59:30.574Z</lastmod>
     
   </url>
   
@@ -58,13 +72,6 @@
   </url>
   
   <url>
-    <loc>http://zackku.com/java-thread-lock-base/</loc>
-    
-    <lastmod>2018-11-19T02:26:04.741Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://zackku.com/cap/</loc>
     
     <lastmod>2018-11-19T01:59:30.814Z</lastmod>
@@ -103,13 +110,6 @@
     <loc>http://zackku.com/java-thread-reentrantlock/</loc>
     
     <lastmod>2018-10-17T08:11:17.673Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://zackku.com/java-thread-aqs/</loc>
-    
-    <lastmod>2018-10-17T08:11:14.308Z</lastmod>
     
   </url>
   

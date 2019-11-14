@@ -5,10 +5,10 @@
     
   <url>
     <loc>http://zackku.com/consensus/</loc>
-    <lastmod>2019-11-09T07:48:44.418Z</lastmod>
+    <lastmod>2019-11-14T02:24:09.633Z</lastmod>
     <data>
         <display>
-        <title>什么拜占庭将军问题？比特币是如何解决的?——深入浅出分布式共识性（一）</title>
+        <title>什么是拜占庭将军问题？比特币是如何解决的?——深入浅出分布式共识性（一）</title>
         <pubTime>2019-11-09T02:37:36.000Z</pubTime>
         
         <tag>分布式共识性</tag>
@@ -21,6 +21,54 @@
            
              
               <breadCrumb title="计算机理论" url="http://zackku.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%90%86%E8%AE%BA/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/java-thread-lock-base/</loc>
+    <lastmod>2019-11-09T08:59:37.455Z</lastmod>
+    <data>
+        <display>
+        <title>Java多线程——锁概念与锁优化</title>
+        <pubTime>2018-08-08T02:17:30.000Z</pubTime>
+        
+        <tag>多线程</tag>
+         
+        <tag>Java</tag>
+         
+        <tag>锁</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java多线程" url="http://zackku.com/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://zackku.com/java-thread-aqs/</loc>
+    <lastmod>2019-11-09T08:59:30.574Z</lastmod>
+    <data>
+        <display>
+        <title>Java多线程——AQS框架源码阅读</title>
+        <pubTime>2018-08-22T03:10:03.000Z</pubTime>
+        
+        <tag>多线程</tag>
+         
+        <tag>Java</tag>
+         
+        <tag>锁</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java多线程" url="http://zackku.com/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
           
         </display>
     </data>
@@ -132,30 +180,6 @@
     
     
   <url>
-    <loc>http://zackku.com/java-thread-lock-base/</loc>
-    <lastmod>2018-11-19T02:26:04.741Z</lastmod>
-    <data>
-        <display>
-        <title>Java多线程——锁概念与锁优化</title>
-        <pubTime>2018-08-08T02:17:30.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>多线程</tag>
-         
-        <tag>锁</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java多线程" url="http://zackku.com/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://zackku.com/cap/</loc>
     <lastmod>2018-11-19T01:59:30.814Z</lastmod>
     <data>
@@ -225,9 +249,9 @@
         <title>你真的懂ThreadPoolExecutor线程池技术吗？看了源码你会有全新的认识</title>
         <pubTime>2018-08-28T09:12:58.000Z</pubTime>
         
-        <tag>Java</tag>
-         
         <tag>多线程</tag>
+         
+        <tag>Java</tag>
          
         <tag>线程池</tag>
          
@@ -249,9 +273,9 @@
         <title>Java多线程——ReentrantReadWriteLock源码阅读</title>
         <pubTime>2018-08-26T17:49:26.000Z</pubTime>
         
-        <tag>Java</tag>
-         
         <tag>多线程</tag>
+         
+        <tag>Java</tag>
          
         <tag>锁</tag>
          
@@ -273,33 +297,9 @@
         <title>Java多线程——ReentrantLock源码阅读</title>
         <pubTime>2018-08-26T13:37:05.000Z</pubTime>
         
-        <tag>Java</tag>
-         
         <tag>多线程</tag>
          
-        <tag>锁</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java多线程" url="http://zackku.com/categories/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://zackku.com/java-thread-aqs/</loc>
-    <lastmod>2018-10-17T08:11:14.308Z</lastmod>
-    <data>
-        <display>
-        <title>Java多线程——AQS框架源码阅读</title>
-        <pubTime>2018-08-22T03:10:03.000Z</pubTime>
-        
         <tag>Java</tag>
-         
-        <tag>多线程</tag>
          
         <tag>锁</tag>
          
